@@ -12,16 +12,19 @@
 		CF465F19186C15080033277E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF465F18186C15080033277E /* UIKit.framework */; };
 		CF465F1F186C15080033277E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CF465F1D186C15080033277E /* InfoPlist.strings */; };
 		CF465F21186C15080033277E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CF465F20186C15080033277E /* main.m */; };
-		CF465F25186C15080033277E /* TEAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CF465F24186C15080033277E /* TEAppDelegate.m */; };
+		CF465F25186C15080033277E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CF465F24186C15080033277E /* AppDelegate.m */; };
 		CF465F28186C15080033277E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CF465F26186C15080033277E /* Main.storyboard */; };
-		CF465F2B186C15080033277E /* TEFirstViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CF465F2A186C15080033277E /* TEFirstViewController.m */; };
-		CF465F2E186C15080033277E /* TESecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CF465F2D186C15080033277E /* TESecondViewController.m */; };
+		CF465F2B186C15080033277E /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CF465F2A186C15080033277E /* HomeViewController.m */; };
+		CF465F2E186C15080033277E /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CF465F2D186C15080033277E /* SettingsViewController.m */; };
 		CF465F30186C15080033277E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF465F2F186C15080033277E /* Images.xcassets */; };
 		CF465F37186C15080033277E /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF465F36186C15080033277E /* XCTest.framework */; };
 		CF465F38186C15080033277E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF465F14186C15080033277E /* Foundation.framework */; };
 		CF465F39186C15080033277E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF465F18186C15080033277E /* UIKit.framework */; };
 		CF465F41186C15080033277E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CF465F3F186C15080033277E /* InfoPlist.strings */; };
-		CF465F43186C15080033277E /* Telecom_ElementsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CF465F42186C15080033277E /* Telecom_ElementsTests.m */; };
+		CF465F43186C15080033277E /* ElementsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CF465F42186C15080033277E /* ElementsTests.m */; };
+		CF465F4E186D299C0033277E /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = CF465F4D186D299C0033277E /* LoadingView.m */; };
+		CFC6E988187A7BA3001DE63E /* RecordsManagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CFC6E987187A7BA3001DE63E /* RecordsManagerViewController.m */; };
+		CFDC712F1879D9900067DAEE /* PartDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CFDC712E1879D9900067DAEE /* PartDetailsViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,27 +38,33 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		CF465F11186C15080033277E /* Telecom Elements.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Telecom Elements.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF465F11186C15080033277E /* Elements.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Elements.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF465F14186C15080033277E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		CF465F16186C15080033277E /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		CF465F18186C15080033277E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		CF465F1C186C15080033277E /* Telecom Elements-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Telecom Elements-Info.plist"; sourceTree = "<group>"; };
+		CF465F1C186C15080033277E /* Elements-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Elements-Info.plist"; sourceTree = "<group>"; };
 		CF465F1E186C15080033277E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CF465F20186C15080033277E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		CF465F22186C15080033277E /* Telecom Elements-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Telecom Elements-Prefix.pch"; sourceTree = "<group>"; };
-		CF465F23186C15080033277E /* TEAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TEAppDelegate.h; sourceTree = "<group>"; };
-		CF465F24186C15080033277E /* TEAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TEAppDelegate.m; sourceTree = "<group>"; };
+		CF465F22186C15080033277E /* Elements-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Elements-Prefix.pch"; sourceTree = "<group>"; };
+		CF465F23186C15080033277E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		CF465F24186C15080033277E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		CF465F27186C15080033277E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		CF465F29186C15080033277E /* TEFirstViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TEFirstViewController.h; sourceTree = "<group>"; };
-		CF465F2A186C15080033277E /* TEFirstViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TEFirstViewController.m; sourceTree = "<group>"; };
-		CF465F2C186C15080033277E /* TESecondViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TESecondViewController.h; sourceTree = "<group>"; };
-		CF465F2D186C15080033277E /* TESecondViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TESecondViewController.m; sourceTree = "<group>"; };
+		CF465F29186C15080033277E /* HomeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
+		CF465F2A186C15080033277E /* HomeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
+		CF465F2C186C15080033277E /* SettingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		CF465F2D186C15080033277E /* SettingsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		CF465F2F186C15080033277E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		CF465F35186C15080033277E /* Telecom ElementsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Telecom ElementsTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF465F35186C15080033277E /* ElementsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ElementsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF465F36186C15080033277E /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		CF465F3E186C15080033277E /* Telecom ElementsTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Telecom ElementsTests-Info.plist"; sourceTree = "<group>"; };
+		CF465F3E186C15080033277E /* ElementsTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "ElementsTests-Info.plist"; sourceTree = "<group>"; };
 		CF465F40186C15080033277E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		CF465F42186C15080033277E /* Telecom_ElementsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Telecom_ElementsTests.m; sourceTree = "<group>"; };
+		CF465F42186C15080033277E /* ElementsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ElementsTests.m; sourceTree = "<group>"; };
+		CF465F4C186D299C0033277E /* LoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingView.h; sourceTree = "<group>"; };
+		CF465F4D186D299C0033277E /* LoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingView.m; sourceTree = "<group>"; };
+		CFC6E986187A7BA3001DE63E /* RecordsManagerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordsManagerViewController.h; sourceTree = "<group>"; };
+		CFC6E987187A7BA3001DE63E /* RecordsManagerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordsManagerViewController.m; sourceTree = "<group>"; };
+		CFDC712D1879D9900067DAEE /* PartDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PartDetailsViewController.h; sourceTree = "<group>"; };
+		CFDC712E1879D9900067DAEE /* PartDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PartDetailsViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,8 +94,8 @@
 		CF465F08186C15080033277E = {
 			isa = PBXGroup;
 			children = (
-				CF465F1A186C15080033277E /* Telecom Elements */,
-				CF465F3C186C15080033277E /* Telecom ElementsTests */,
+				CF465F1A186C15080033277E /* Elements */,
+				CF465F3C186C15080033277E /* ElementsTests */,
 				CF465F13186C15080033277E /* Frameworks */,
 				CF465F12186C15080033277E /* Products */,
 			);
@@ -95,8 +104,8 @@
 		CF465F12186C15080033277E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CF465F11186C15080033277E /* Telecom Elements.app */,
-				CF465F35186C15080033277E /* Telecom ElementsTests.xctest */,
+				CF465F11186C15080033277E /* Elements.app */,
+				CF465F35186C15080033277E /* ElementsTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -112,46 +121,52 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		CF465F1A186C15080033277E /* Telecom Elements */ = {
+		CF465F1A186C15080033277E /* Elements */ = {
 			isa = PBXGroup;
 			children = (
-				CF465F23186C15080033277E /* TEAppDelegate.h */,
-				CF465F24186C15080033277E /* TEAppDelegate.m */,
+				CF465F23186C15080033277E /* AppDelegate.h */,
+				CF465F24186C15080033277E /* AppDelegate.m */,
+				CF465F4C186D299C0033277E /* LoadingView.h */,
+				CF465F4D186D299C0033277E /* LoadingView.m */,
 				CF465F26186C15080033277E /* Main.storyboard */,
-				CF465F29186C15080033277E /* TEFirstViewController.h */,
-				CF465F2A186C15080033277E /* TEFirstViewController.m */,
-				CF465F2C186C15080033277E /* TESecondViewController.h */,
-				CF465F2D186C15080033277E /* TESecondViewController.m */,
+				CF465F29186C15080033277E /* HomeViewController.h */,
+				CF465F2A186C15080033277E /* HomeViewController.m */,
+				CF465F2C186C15080033277E /* SettingsViewController.h */,
+				CF465F2D186C15080033277E /* SettingsViewController.m */,
+				CFDC712D1879D9900067DAEE /* PartDetailsViewController.h */,
+				CFDC712E1879D9900067DAEE /* PartDetailsViewController.m */,
+				CFC6E986187A7BA3001DE63E /* RecordsManagerViewController.h */,
+				CFC6E987187A7BA3001DE63E /* RecordsManagerViewController.m */,
 				CF465F2F186C15080033277E /* Images.xcassets */,
 				CF465F1B186C15080033277E /* Supporting Files */,
 			);
-			path = "Telecom Elements";
+			path = Elements;
 			sourceTree = "<group>";
 		};
 		CF465F1B186C15080033277E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				CF465F1C186C15080033277E /* Telecom Elements-Info.plist */,
+				CF465F1C186C15080033277E /* Elements-Info.plist */,
 				CF465F1D186C15080033277E /* InfoPlist.strings */,
 				CF465F20186C15080033277E /* main.m */,
-				CF465F22186C15080033277E /* Telecom Elements-Prefix.pch */,
+				CF465F22186C15080033277E /* Elements-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		CF465F3C186C15080033277E /* Telecom ElementsTests */ = {
+		CF465F3C186C15080033277E /* ElementsTests */ = {
 			isa = PBXGroup;
 			children = (
-				CF465F42186C15080033277E /* Telecom_ElementsTests.m */,
+				CF465F42186C15080033277E /* ElementsTests.m */,
 				CF465F3D186C15080033277E /* Supporting Files */,
 			);
-			path = "Telecom ElementsTests";
+			path = ElementsTests;
 			sourceTree = "<group>";
 		};
 		CF465F3D186C15080033277E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				CF465F3E186C15080033277E /* Telecom ElementsTests-Info.plist */,
+				CF465F3E186C15080033277E /* ElementsTests-Info.plist */,
 				CF465F3F186C15080033277E /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
@@ -160,9 +175,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		CF465F10186C15080033277E /* Telecom Elements */ = {
+		CF465F10186C15080033277E /* Elements */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CF465F46186C15080033277E /* Build configuration list for PBXNativeTarget "Telecom Elements" */;
+			buildConfigurationList = CF465F46186C15080033277E /* Build configuration list for PBXNativeTarget "Elements" */;
 			buildPhases = (
 				CF465F0D186C15080033277E /* Sources */,
 				CF465F0E186C15080033277E /* Frameworks */,
@@ -172,14 +187,14 @@
 			);
 			dependencies = (
 			);
-			name = "Telecom Elements";
+			name = Elements;
 			productName = "Telecom Elements";
-			productReference = CF465F11186C15080033277E /* Telecom Elements.app */;
+			productReference = CF465F11186C15080033277E /* Elements.app */;
 			productType = "com.apple.product-type.application";
 		};
-		CF465F34186C15080033277E /* Telecom ElementsTests */ = {
+		CF465F34186C15080033277E /* ElementsTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CF465F49186C15080033277E /* Build configuration list for PBXNativeTarget "Telecom ElementsTests" */;
+			buildConfigurationList = CF465F49186C15080033277E /* Build configuration list for PBXNativeTarget "ElementsTests" */;
 			buildPhases = (
 				CF465F31186C15080033277E /* Sources */,
 				CF465F32186C15080033277E /* Frameworks */,
@@ -190,9 +205,9 @@
 			dependencies = (
 				CF465F3B186C15080033277E /* PBXTargetDependency */,
 			);
-			name = "Telecom ElementsTests";
+			name = ElementsTests;
 			productName = "Telecom ElementsTests";
-			productReference = CF465F35186C15080033277E /* Telecom ElementsTests.xctest */;
+			productReference = CF465F35186C15080033277E /* ElementsTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -201,7 +216,7 @@
 		CF465F09186C15080033277E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				CLASSPREFIX = TE;
+				CLASSPREFIX = "";
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Langley Assets, LLC";
 				TargetAttributes = {
@@ -210,7 +225,7 @@
 					};
 				};
 			};
-			buildConfigurationList = CF465F0C186C15080033277E /* Build configuration list for PBXProject "Telecom Elements" */;
+			buildConfigurationList = CF465F0C186C15080033277E /* Build configuration list for PBXProject "Elements" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -223,8 +238,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CF465F10186C15080033277E /* Telecom Elements */,
-				CF465F34186C15080033277E /* Telecom ElementsTests */,
+				CF465F10186C15080033277E /* Elements */,
+				CF465F34186C15080033277E /* ElementsTests */,
 			);
 		};
 /* End PBXProject section */
@@ -256,9 +271,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				CF465F21186C15080033277E /* main.m in Sources */,
-				CF465F25186C15080033277E /* TEAppDelegate.m in Sources */,
-				CF465F2B186C15080033277E /* TEFirstViewController.m in Sources */,
-				CF465F2E186C15080033277E /* TESecondViewController.m in Sources */,
+				CF465F4E186D299C0033277E /* LoadingView.m in Sources */,
+				CF465F25186C15080033277E /* AppDelegate.m in Sources */,
+				CF465F2B186C15080033277E /* HomeViewController.m in Sources */,
+				CFDC712F1879D9900067DAEE /* PartDetailsViewController.m in Sources */,
+				CFC6E988187A7BA3001DE63E /* RecordsManagerViewController.m in Sources */,
+				CF465F2E186C15080033277E /* SettingsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,7 +284,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CF465F43186C15080033277E /* Telecom_ElementsTests.m in Sources */,
+				CF465F43186C15080033277E /* ElementsTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -275,7 +293,7 @@
 /* Begin PBXTargetDependency section */
 		CF465F3B186C15080033277E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = CF465F10186C15080033277E /* Telecom Elements */;
+			target = CF465F10186C15080033277E /* Elements */;
 			targetProxy = CF465F3A186C15080033277E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -385,10 +403,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Telecom Elements/Telecom Elements-Prefix.pch";
-				INFOPLIST_FILE = "Telecom Elements/Telecom Elements-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				GCC_PREFIX_HEADER = "Elements/Elements-Prefix.pch";
+				INFOPLIST_FILE = "Elements/Elements-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_NAME = Elements;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -398,10 +418,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Telecom Elements/Telecom Elements-Prefix.pch";
-				INFOPLIST_FILE = "Telecom Elements/Telecom Elements-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				GCC_PREFIX_HEADER = "Elements/Elements-Prefix.pch";
+				INFOPLIST_FILE = "Elements/Elements-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_NAME = Elements;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -410,20 +432,20 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Telecom Elements.app/Telecom Elements";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Elements.app/Elements";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Telecom Elements/Telecom Elements-Prefix.pch";
+				GCC_PREFIX_HEADER = "Elements/Elements-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "Telecom ElementsTests/Telecom ElementsTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				INFOPLIST_FILE = "ElementsTests/ElementsTests-Info.plist";
+				PRODUCT_NAME = ElementsTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -433,16 +455,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Telecom Elements.app/Telecom Elements";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Elements.app/Elements";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Telecom Elements/Telecom Elements-Prefix.pch";
-				INFOPLIST_FILE = "Telecom ElementsTests/Telecom ElementsTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				GCC_PREFIX_HEADER = "Elements/Elements-Prefix.pch";
+				INFOPLIST_FILE = "ElementsTests/ElementsTests-Info.plist";
+				PRODUCT_NAME = ElementsTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -451,7 +473,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		CF465F0C186C15080033277E /* Build configuration list for PBXProject "Telecom Elements" */ = {
+		CF465F0C186C15080033277E /* Build configuration list for PBXProject "Elements" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CF465F44186C15080033277E /* Debug */,
@@ -460,21 +482,23 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CF465F46186C15080033277E /* Build configuration list for PBXNativeTarget "Telecom Elements" */ = {
+		CF465F46186C15080033277E /* Build configuration list for PBXNativeTarget "Elements" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CF465F47186C15080033277E /* Debug */,
 				CF465F48186C15080033277E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
-		CF465F49186C15080033277E /* Build configuration list for PBXNativeTarget "Telecom ElementsTests" */ = {
+		CF465F49186C15080033277E /* Build configuration list for PBXNativeTarget "ElementsTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CF465F4A186C15080033277E /* Debug */,
 				CF465F4B186C15080033277E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

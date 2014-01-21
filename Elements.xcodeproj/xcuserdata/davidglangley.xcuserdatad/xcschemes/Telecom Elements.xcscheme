@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CF465F10186C15080033277E"
-               BuildableName = "Telecom Elements.app"
-               BlueprintName = "Telecom Elements"
-               ReferencedContainer = "container:Telecom Elements.xcodeproj">
+               BuildableName = "Elements.app"
+               BlueprintName = "Elements"
+               ReferencedContainer = "container:Elements.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CF465F34186C15080033277E"
-               BuildableName = "Telecom ElementsTests.xctest"
-               BlueprintName = "Telecom ElementsTests"
-               ReferencedContainer = "container:Telecom Elements.xcodeproj">
+               BuildableName = "ElementsTests.xctest"
+               BlueprintName = "ElementsTests"
+               ReferencedContainer = "container:Elements.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -43,9 +43,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CF465F10186C15080033277E"
-            BuildableName = "Telecom Elements.app"
-            BlueprintName = "Telecom Elements"
-            ReferencedContainer = "container:Telecom Elements.xcodeproj">
+            BuildableName = "Elements.app"
+            BlueprintName = "Elements"
+            ReferencedContainer = "container:Elements.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CF465F10186C15080033277E"
-            BuildableName = "Telecom Elements.app"
-            BlueprintName = "Telecom Elements"
-            ReferencedContainer = "container:Telecom Elements.xcodeproj">
+            BuildableName = "Elements.app"
+            BlueprintName = "Elements"
+            ReferencedContainer = "container:Elements.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -80,9 +80,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CF465F10186C15080033277E"
-            BuildableName = "Telecom Elements.app"
-            BlueprintName = "Telecom Elements"
-            ReferencedContainer = "container:Telecom Elements.xcodeproj">
+            BuildableName = "Elements.app"
+            BlueprintName = "Elements"
+            ReferencedContainer = "container:Elements.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
