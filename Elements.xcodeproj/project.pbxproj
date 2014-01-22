@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CF3B2D23188E410B00DD042F /* libPKRevealController.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CF3B2D22188E409900DD042F /* libPKRevealController.a */; };
+		CF3B2D28188E459A00DD042F /* LeftViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CF3B2D27188E459A00DD042F /* LeftViewController.m */; };
 		CF465F15186C15080033277E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF465F14186C15080033277E /* Foundation.framework */; };
 		CF465F17186C15080033277E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF465F16186C15080033277E /* CoreGraphics.framework */; };
 		CF465F19186C15080033277E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF465F18186C15080033277E /* UIKit.framework */; };
@@ -28,6 +30,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		CF3B2D21188E409900DD042F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CF3B2D1D188E409900DD042F /* PKRevealController.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F9621E7B1815246000469E41;
+			remoteInfo = PKRevealController;
+		};
 		CF465F3A186C15080033277E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CF465F09186C15080033277E /* Project object */;
@@ -38,6 +47,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CF3B2D1D188E409900DD042F /* PKRevealController.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PKRevealController.xcodeproj; path = PKRevealController/Source/PKRevealController.xcodeproj; sourceTree = "<group>"; };
+		CF3B2D24188E417000DD042F /* PKRevealController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PKRevealController.h; path = PKRevealController/Headers/PKRevealController.h; sourceTree = SOURCE_ROOT; };
+		CF3B2D25188E417000DD042F /* UIViewController+PKRevealController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIViewController+PKRevealController.h"; path = "PKRevealController/Headers/UIViewController+PKRevealController.h"; sourceTree = SOURCE_ROOT; };
+		CF3B2D26188E459A00DD042F /* LeftViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeftViewController.h; sourceTree = "<group>"; };
+		CF3B2D27188E459A00DD042F /* LeftViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeftViewController.m; sourceTree = "<group>"; };
 		CF465F11186C15080033277E /* Elements.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Elements.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF465F14186C15080033277E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		CF465F16186C15080033277E /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -72,6 +86,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CF3B2D23188E410B00DD042F /* libPKRevealController.a in Frameworks */,
 				CF465F17186C15080033277E /* CoreGraphics.framework in Frameworks */,
 				CF465F19186C15080033277E /* UIKit.framework in Frameworks */,
 				CF465F15186C15080033277E /* Foundation.framework in Frameworks */,
@@ -91,6 +106,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CF3B2D1E188E409900DD042F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CF3B2D22188E409900DD042F /* libPKRevealController.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		CF465F08186C15080033277E = {
 			isa = PBXGroup;
 			children = (
@@ -113,6 +136,7 @@
 		CF465F13186C15080033277E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CF3B2D1D188E409900DD042F /* PKRevealController.xcodeproj */,
 				CF465F14186C15080033277E /* Foundation.framework */,
 				CF465F16186C15080033277E /* CoreGraphics.framework */,
 				CF465F18186C15080033277E /* UIKit.framework */,
@@ -137,6 +161,10 @@
 				CFDC712E1879D9900067DAEE /* PartDetailsViewController.m */,
 				CFC6E986187A7BA3001DE63E /* RecordsManagerViewController.h */,
 				CFC6E987187A7BA3001DE63E /* RecordsManagerViewController.m */,
+				CF3B2D26188E459A00DD042F /* LeftViewController.h */,
+				CF3B2D27188E459A00DD042F /* LeftViewController.m */,
+				CF3B2D24188E417000DD042F /* PKRevealController.h */,
+				CF3B2D25188E417000DD042F /* UIViewController+PKRevealController.h */,
 				CF465F2F186C15080033277E /* Images.xcassets */,
 				CF465F1B186C15080033277E /* Supporting Files */,
 			);
@@ -236,6 +264,12 @@
 			mainGroup = CF465F08186C15080033277E;
 			productRefGroup = CF465F12186C15080033277E /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = CF3B2D1E188E409900DD042F /* Products */;
+					ProjectRef = CF3B2D1D188E409900DD042F /* PKRevealController.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				CF465F10186C15080033277E /* Elements */,
@@ -243,6 +277,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		CF3B2D22188E409900DD042F /* libPKRevealController.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libPKRevealController.a;
+			remoteRef = CF3B2D21188E409900DD042F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		CF465F0F186C15080033277E /* Resources */ = {
@@ -271,6 +315,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CF465F21186C15080033277E /* main.m in Sources */,
+				CF3B2D28188E459A00DD042F /* LeftViewController.m in Sources */,
 				CF465F4E186D299C0033277E /* LoadingView.m in Sources */,
 				CF465F25186C15080033277E /* AppDelegate.m in Sources */,
 				CF465F2B186C15080033277E /* HomeViewController.m in Sources */,
@@ -408,6 +453,7 @@
 				GCC_PREFIX_HEADER = "Elements/Elements-Prefix.pch";
 				INFOPLIST_FILE = "Elements/Elements-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Elements;
 				WRAPPER_EXTENSION = app;
 			};
@@ -423,6 +469,7 @@
 				GCC_PREFIX_HEADER = "Elements/Elements-Prefix.pch";
 				INFOPLIST_FILE = "Elements/Elements-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Elements;
 				WRAPPER_EXTENSION = app;
 			};

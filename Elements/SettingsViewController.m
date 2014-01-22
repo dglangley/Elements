@@ -39,6 +39,8 @@
 
 - (void)refreshView:(NSNotification *) notification
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"connectionObserver" object:nil];
+
     if (! [appDelegate.jsonResults objectForKey:@"remotes"]) return;
 
     NSDictionary *remoteDict = [appDelegate.jsonResults objectForKey:@"remotes"];
@@ -48,7 +50,6 @@
         [remotes replaceObjectAtIndex:i withObject:[remoteDict objectForKey:[remoteNames objectAtIndex:i]]];
     }
     //NSLog(@"remote %@",remotes);
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"connectionObserver" object:nil];
     [self.settingsTableView reloadData];
     //[self.settingsTableView reloadSections:0 withRowAnimation:UITableViewRowAnimationAutomatic];
 }

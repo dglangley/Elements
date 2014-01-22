@@ -15,6 +15,8 @@
 
 @implementation HomeViewController
 
+//@synthesize searchBar;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -25,6 +27,16 @@
         [self.navigationController.navigationBar setBackgroundColor:[UIColor redColor]];
     }
     self.navigationItem.title = @"Elements";
+    
+    /*
+    UIImage *listButtonImage = [UIImage imageNamed:@"listButtonBlue.png"];
+    UIButton *listButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [listButton setFrame:CGRectMake(80, 80, listButtonImage.size.width, listButtonImage.size.height)];
+    [listButton setBackgroundImage:listButtonImage forState:UIControlStateNormal];
+    [listButton addTarget:self.revealController action:@selector(showLeftViewController) forControlEvents:UIControlEventTouchUpInside];
+    self.leftNavButton = [[UIBarButtonItem alloc] initWithCustomView:listButton];
+    [self.navigationItem setLeftBarButtonItem:self.leftNavButton];
+     */
 
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
     {
@@ -48,6 +60,8 @@
 
     // set observer for updates from the next view so our data source can be updated automatically
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(simpleRefreshSection) name:@"updateHomeResults" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSearchBar:) name:@"updateSearchBar" object:nil];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -498,6 +512,13 @@
         return;
     }
     
+    [self loadResults];
+}
+
+- (void)updateSearchBar:(NSNotification *)notification
+{
+    //NSLog(@"not %@",notification.userInfo);
+    self.searchBar.text = [notification.userInfo objectForKey:@"entry"];
     [self loadResults];
 }
 

@@ -7,7 +7,6 @@
 //
 
 #import "PartDetailsViewController.h"
-//#import "HomeViewController.h"
 #import "RecordsManagerViewController.h"
 
 @interface PartDetailsViewController ()
@@ -15,8 +14,6 @@
 @end
 
 @implementation PartDetailsViewController
-
-//@synthesize homeViewController;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {

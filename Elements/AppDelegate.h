@@ -8,13 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import "LoadingView.h"
+#import "PKRevealController.h"
 
 #define appDelegate ((AppDelegate*)[[UIApplication sharedApplication] delegate])
 
 #define URL_ROOT "http://dev.thewaitlessapp.com"
 //#define URL_ROOT "http://david.local"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, NSURLConnectionDelegate>
+@class LeftViewController;
+@class HomeViewController;
+
+@interface AppDelegate : UIResponder <UIApplicationDelegate, NSURLConnectionDelegate, PKRevealing>
 {
     NSMutableData* _receivedData;
 }
@@ -28,6 +32,9 @@
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
 @property (strong, nonatomic) UIToolbar *keyboardToolbar;
 @property (strong, nonatomic) UIActivityIndicatorView *activityIndicatorView;
+@property (nonatomic, strong, readwrite) PKRevealController *revealController;
+@property (strong, nonatomic) LeftViewController* leftViewController;
+@property (strong, nonatomic) HomeViewController *HomeVC;
 
 //for singleton class
 //@property (strong, nonatomic) SingletonData *singleton;

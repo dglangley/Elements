@@ -7,19 +7,26 @@
 //
 
 #import "AppDelegate.h"
+#import "LeftViewController.h"
+#import "HomeViewController.h"
 #import <QuartzCore/QuartzCore.h>
 
 @implementation AppDelegate
 
 @synthesize LoadingVC;
+@synthesize HomeVC;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
-    self.tabBarViewController = (UITabBarController *)self.window.rootViewController;
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    //self.tabBarViewController = (UITabBarController *)self.window.rootViewController;
+    self.tabBarViewController = [storyboard instantiateViewControllerWithIdentifier:@"tabBarViewController"];
     self.navViewController = (UINavigationController *)self.tabBarViewController.navigationController;
     [self.navViewController.navigationBar setContentMode:UIViewContentModeScaleAspectFit];
-
+	self.leftViewController = [storyboard instantiateViewControllerWithIdentifier:@"leftViewController"];
+    self.leftViewController.view.backgroundColor = [UIColor grayColor];
+    
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
     {
     }
@@ -39,10 +46,33 @@
     //set the title for pull request
     self.refreshControl.attributedTitle = [[NSAttributedString alloc]initWithString:@"pull to refresh"];
     //    [self.refreshControl setFrame:CGRectMake(-100, -200, self.contentTableView.frame.size.width, 20)];
+   
+    //UIViewController *sideViewController = [[LeftViewController alloc] init];
+    self.revealController = [PKRevealController
+                             revealControllerWithFrontViewController:self.tabBarViewController
+                             leftViewController:[self leftSideViewController]
+                             rightViewController:nil];
+    self.revealController.delegate = self;
+    self.window.rootViewController = self.revealController;
+    
+    // disables the pan gesture which slides out side menu because it
+    // interferes with swipe gesture for editing cells
+    [self.revealController setRecognizesPanningOnFrontView:YES];
+    // enable swipe gesture on nav bar
+    [self.navViewController.navigationBar addGestureRecognizer:self.revealController.revealPanGestureRecognizer];
     
     return YES;
 }
-							
+
+- (UIViewController *)leftSideViewController
+{
+    UIViewController *leftSideViewController = [[UIViewController alloc] init];
+    leftSideViewController = self.leftViewController;
+    leftSideViewController.view.backgroundColor = [UIColor grayColor];
+    
+    return leftSideViewController;
+}
+
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

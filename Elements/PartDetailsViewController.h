@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 #import "HomeViewController.h"
-//#import "RecordsManagerViewController.h"
 
 @class RecordsManagerViewController;
 
@@ -32,7 +31,6 @@
 
 @property (strong, nonatomic) NSIndexPath *resultsIndexPath;
 @property (strong, nonatomic) NSMutableDictionary *partDictionary;
-//@property (strong, nonatomic) HomeViewController *homeViewController;
 
 //- (IBAction)didSelectPrice:(id)sender;
 - (IBAction)didChangeSegmentedControl:(id)sender;
