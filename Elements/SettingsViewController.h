@@ -14,6 +14,7 @@
     NSArray *brokerSites;
     NSMutableArray *remotes;
     NSArray *remoteNames;
+    NSDictionary *remoteDescrs;
 }
 @property (strong, nonatomic) IBOutlet UITableView *settingsTableView;
 

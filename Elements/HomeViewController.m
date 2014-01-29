@@ -46,7 +46,8 @@
     
     [appDelegate addKeyboardBarWithOptions:NO];
     self.searchBar.inputAccessoryView = appDelegate.keyboardToolbar;
-
+    pg = 0;// number that represents how many paged results
+    
     //call the refresh function
     [appDelegate.refreshControl addTarget:self action:@selector(refreshTableView)
                   forControlEvents:UIControlEventValueChanged];
@@ -67,11 +68,29 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     
-    //[jsonResults valueForKey:@"hosts"]
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    userLongPressDetected = NO;
+    
+    UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc]
+                                          initWithTarget:self action:@selector(userDidLongPress:)];
+    lpgr.minimumPressDuration = 1.0; //seconds
+    lpgr.delegate = self;
+    [self.resultsTableView addGestureRecognizer:lpgr];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
+    // remove previous-search label at bottom of view if it's there
+    UILabel *searchLabel = (UILabel *)[self.view viewWithTag:11];
+    if (searchLabel != nil)
+    {
+        [appDelegate fadeOutViewWithDelay:searchLabel :0.4];
+        userLongPressDetected = NO;
+    }
+
     if ([self.searchBar.text isEqualToString:@""])
     {
         // confirm live results if depressed
@@ -99,19 +118,12 @@
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
-    return;//for now, no methods auto-load results below
-    /*
-    if (! [searchText isEqualToString:@""]) return;
-    
-    [self loadResults];
-     */
+    return;
 }
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar
 {
     [self.searchBar setShowsCancelButton:YES animated:YES];
-    //self.resultsTableView.allowsSelection = NO;
-    //self.resultsTableView.scrollEnabled = NO;
     
     UITextField *searchBarTextField = nil;
     for (UIView *view in self.searchBar.subviews)
@@ -144,15 +156,13 @@
 
 - (void)didLoadResultsWithPartId : (NSString *)partId
 {
-    //[self.results removeAllObjects];
     if ([self.searchBar.text isEqualToString:@""] && [partId isEqualToString:@""])
     {
         //NSLog(@"%d %d %hhd", self.resultsTypeSegmentedControl.selectedSegmentIndex, [masterResults count], forceLoadResults);
         if (self.resultsTypeSegmentedControl.selectedSegmentIndex == 0
             && [masterResults count] > 0 && forceLoadResults == NO)
         {
-            //NSLog(@"count %d, %d", [masterResults count], [self.results count]);
-            self.results = masterResults;//[masterResults mutableCopy];
+            self.results = masterResults;
             [self simpleRefreshSection];
 
             return;
@@ -163,14 +173,13 @@
             return;
         }
     }
-        
-    NSString *searchString = [[NSString stringWithFormat:@"%@", self.searchBar.text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    NSString *urlString = [NSString stringWithFormat:@"%s/drop/search.php?search=%@&partid=%@&results_type=%ld", URL_ROOT, searchString, partId, (long)self.resultsTypeSegmentedControl.selectedSegmentIndex];
+    
+    NSString *searchString = [appDelegate stringByEncodingAmpersands:[[[NSString stringWithFormat:@"%@", self.searchBar.text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    NSString *urlString = [NSString stringWithFormat:@"%s/drop/search.php?search=%@&partid=%@&results_type=%ld&pg=%d", URL_ROOT, searchString, partId, (long)self.resultsTypeSegmentedControl.selectedSegmentIndex, pg];
     NSLog(@"home url %@",urlString);
-    [appDelegate goURL:urlString];
+    [appDelegate requestURL:urlString];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshView:) name:@"connectionObserver" object:nil];
-    //[appDelegate addUniqueObserver:self selector:@selector(refreshView:) name:@"connectionObserver" object:nil];
 }
 
 - (void)simpleRefreshSection
@@ -203,6 +212,67 @@
         [self.searchBar resignFirstResponder];//close keyboard and resign focus from search bar
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"connectionObserver" object:nil];
+}
+
+- (void)userDidLongPress:(UILongPressGestureRecognizer *)gestureRecognizer
+{
+    if (gestureRecognizer.state != UIGestureRecognizerStateBegan) return;
+
+    userLongPressDetected = YES;
+    CGPoint p = [gestureRecognizer locationInView:self.resultsTableView];
+    
+    NSIndexPath *indexPath = [self.resultsTableView indexPathForRowAtPoint:p];
+    if (indexPath == nil) return;//long pressed on table but not on row
+    
+    if (! [self.searchBar.text isEqualToString:@""])
+    {
+        float labelHeight = 70.0f;
+        UILabel *prevSearchLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.tabBarController.tabBar.frame.origin.y-labelHeight, self.view.frame.size.width, labelHeight)];
+        prevSearchLabel.text = self.searchBar.text;
+        prevSearchLabel.textAlignment = NSTextAlignmentCenter;
+        prevSearchLabel.textColor = [UIColor whiteColor];
+        prevSearchLabel.font = [UIFont boldSystemFontOfSize:16.0f];
+        prevSearchLabel.backgroundColor = [UIColor colorWithRed:143.0/255.0 green:94.0/255.0 blue:23.0/255.0 alpha:1.0];
+        prevSearchLabel.userInteractionEnabled = YES;
+        prevSearchLabel.tag = 11;
+        
+        [self.view addSubview:prevSearchLabel];
+    }
+    
+    NSDictionary *rowData = [self.results objectAtIndex:indexPath.row];
+    NSString *searchStr = [rowData objectForKey:@"heci"];
+    if ([searchStr isEqualToString:@""] || searchStr == nil)
+    {
+        searchStr = [rowData objectForKey:@"part"];
+    }
+    
+    userLongPressDetected = NO;
+    self.searchBar.text = searchStr;
+    [self loadResults];
+    
+    /*
+    // push to details controller
+    UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    HomeViewController *homeViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"HomeViewController"];
+    homeViewController.searchBar.text = searchStr;
+     
+    [self.navigationController pushViewController:homeViewController animated:YES];
+     */
+}
+
+-(void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event
+{
+    UITouch *touch = [touches anyObject];
+    if (touch.view.tag != 11) return;
+    
+    UILabel *touchLabel = (UILabel *)touch.view;
+    self.searchBar.text = touchLabel.text;
+    
+    // remove label at bottom of view if it's there
+    [appDelegate fadeOutViewWithDelay:touchLabel :0.4];
+    userLongPressDetected = NO;
+
+    [self loadResults];
 }
 
 
@@ -362,6 +432,14 @@
 
     NSString *labelString = [appDelegate formatPartTitle:[rowData objectForKey:@"part"] :[rowData objectForKey:@"rel"] :[rowData objectForKey:@"heci"]];
     topLabel.text = labelString;
+    if ([rowData objectForKey:@"rank"] && [[rowData objectForKey:@"rank"] isEqualToString:@"2"])
+    {
+        topLabel.font = [UIFont boldSystemFontOfSize:12.0f];
+    }
+    else
+    {
+        topLabel.font = [UIFont systemFontOfSize:12.0f];
+    }
     
     NSString *descr = [appDelegate formatPartDescr:[rowData objectForKey:@"system"] :[rowData objectForKey:@"description"]];
     bottomLabel.text = descr;
@@ -375,6 +453,9 @@
     {
         // this is the date being passed in
         [appDelegate.dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        //NSString *checkDate = [NSString stringWithFormat:@"%@",[appDelegate.dateFormatter dateFromString:[rowData objectForKey:@"datetime"]]];
+        //if ([[checkDate substringToIndex:10] isEqualToString:today]) topLabel.font = [UIFont boldSystemFontOfSize:10.0f];
+        
         dateTime = [appDelegate.dateFormatter dateFromString:[rowData objectForKey:@"datetime"]];
         // this is the date/time we're formatting to
         [appDelegate.dateFormatter setDateFormat:@"MM/dd, h:mma"];
@@ -427,6 +508,9 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    //NSLog(@"long %hhd",userLongPressDetected);
+    if (userLongPressDetected == YES) return;
 
     // get partid and send it in url to get all results based on that partid
     //NSString *partId = [[self.results objectAtIndex:indexPath.row] objectForKey:@"id"];
@@ -440,7 +524,7 @@
     partDetailsViewController.resultsIndexPath = indexPath;
     // assign dictionary to next view controller
     //NSLog(@"prep dict %@",partDict);
-    [partDict setObject:[NSString stringWithFormat:@"%d",indexPath.row] forKey:@"indexPathRow"];
+    [partDict setObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row] forKey:@"indexPathRow"];
     partDetailsViewController.partDictionary = partDict;
     
     [self.navigationController pushViewController:partDetailsViewController animated:YES];
@@ -519,6 +603,7 @@
 {
     //NSLog(@"not %@",notification.userInfo);
     self.searchBar.text = [notification.userInfo objectForKey:@"entry"];
+    
     [self loadResults];
 }
 

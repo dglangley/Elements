@@ -11,10 +11,12 @@
 //#import "PartDetailsViewController.h"
 @class PartDetailsViewController;
 
-@interface HomeViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
+@interface HomeViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate>
 {
     BOOL forceLoadResults;
     NSMutableArray *masterResults;
+    BOOL userLongPressDetected;
+    int pg;
 }
 
 @property (strong, nonatomic) NSMutableArray *results;

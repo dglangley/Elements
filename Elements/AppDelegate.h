@@ -39,11 +39,14 @@
 //for singleton class
 //@property (strong, nonatomic) SingletonData *singleton;
 
+- (void)fadeOutViewWithDelay: (UIView *)expiringView :(float)delayInSeconds;
 - (void)goURL:(NSString *)queryString;
+- (void)requestURL:(NSString *)queryString;
 - (void)addKeyboardBarWithOptions:(BOOL)withNavigators;
 - (NSString *)formatPartTitle:(NSString *)part :(NSString *)rel :(NSString *)heci;
 - (NSString *)formatPartDescr:(NSString *)system :(NSString *)descr;
 - (void)completeAlertView;
 - (void)addUniqueObserver:(id)observer selector:(SEL)selector name:(NSString *)name object:(id)object;
+- (NSString *)stringByEncodingAmpersands:(NSString *)stringToEncode;
 
 @end

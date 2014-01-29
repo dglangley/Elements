@@ -232,10 +232,15 @@
 
 - (void)goURL:(NSString *)rawUrlString
 {
-    //NSLog(@"url %@", queryString);
+    //NSLog(@"url %@", rawUrlString);
     NSString *queryString = [rawUrlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSLog(@"encoded url %@",queryString);
     
+    [self requestURL:queryString];
+}
+
+- (void)requestURL:(NSString *)queryString
+{
     NSMutableURLRequest *theRequest=[NSMutableURLRequest
                                      requestWithURL:[NSURL URLWithString:queryString]
                                      cachePolicy:NSURLRequestUseProtocolCachePolicy
@@ -346,7 +351,9 @@
         responseText = [appDelegate.jsonResults objectForKey:@"response"];
     }
     label.text = responseText;
+    label.adjustsFontSizeToFitWidth = YES;
     label.font = [UIFont boldSystemFontOfSize:18];
+    label.numberOfLines = 0;
     label.textAlignment = NSTextAlignmentCenter;
     
     // Combine all activity loading items together
@@ -356,10 +363,16 @@
     [self fadeOutView:completeView];
 }
 
+
 -(void)fadeOutView: (UIView *)expiringView
 {
+    [self fadeOutViewWithDelay:expiringView :1.2f];
+}
+
+-(void)fadeOutViewWithDelay: (UIView *)expiringView :(float)delayInSeconds
+{
     [UIView animateWithDuration:0.4
-                          delay:1.2  /* starts the animation after 1.2 seconds */
+                          delay:delayInSeconds  /* starts the animation after 1.2 seconds */
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^ {
                          expiringView.alpha = 0.0;
@@ -369,6 +382,12 @@
                          [expiringView removeFromSuperview];
                          //[myLabel2 removeFromSuperview];
                      }];
+}
+
+- (NSString *)stringByEncodingAmpersands:(NSString *)stringToEncode
+{
+    NSString *encodedString = [stringToEncode stringByReplacingOccurrencesOfString: @"&" withString: @"%26"];
+    return encodedString;
 }
 
 @end

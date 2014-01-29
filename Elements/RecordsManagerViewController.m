@@ -114,7 +114,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 5;
+    return 6;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -144,7 +144,11 @@
         case 4:
             cell = self.cell4;
             break;
+        case 5:
+            cell = self.cell5;
+            break;
         default:
+            cell = self.cell5;
             break;
     }
     UITextField *cellTextField = (UITextField *)[cell.contentView viewWithTag:indexPath.row+1];
@@ -206,20 +210,24 @@
 {
     NSString *company = [[(UITextField *)[self.cell0 viewWithTag:1] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (company == nil) company = @"";
-    NSString *ref1 = [[(UITextField *)[self.cell1 viewWithTag:2] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    if (ref1 == nil) ref1 = @"";
+    company = [appDelegate stringByEncodingAmpersands:company];
+    NSString *orderNum = [[(UITextField *)[self.cell1 viewWithTag:2] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if (orderNum == nil) orderNum = @"";
+    //orderNum = [orderNum stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSString *qty = [[(UITextField *)[self.cell2 viewWithTag:3] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (qty == nil) qty = @"";
     NSString *price = [[(UITextField *)[self.cell3 viewWithTag:4] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (price == nil) price = @"";
     NSString *date = [[(UITextField *)[self.cell4 viewWithTag:5] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (date == nil) date = @"";
-    NSString *recordId = [[self.recordArray objectAtIndex:5] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    //date = [date stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *ref1 = [[(UITextField *)[self.cell5 viewWithTag:6] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if (ref1 == nil) ref1 = @"";
+    //ref1 = [ref1 stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *recordId = [[self.recordArray objectAtIndex:6] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (recordId == nil) recordId = @"";
-    NSString *categoryId = [[self.recordArray objectAtIndex:6] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *categoryId = [[self.recordArray objectAtIndex:7] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (categoryId == nil) categoryId = @"";
-    NSString *orderNum = [[self.recordArray objectAtIndex:7] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    if (orderNum == nil) orderNum = @"";
     NSString *partId = [[self.recordArray objectAtIndex:8] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (partId == nil) partId = @"";
     
@@ -237,6 +245,9 @@
 
     [self.view endEditing:YES];
     [appDelegate completeAlertView];
+    if (! [appDelegate.jsonResults objectForKey:@"results"]) return;
+    
+    
     NSMutableDictionary *tempDataArray = [[[appDelegate.jsonResults objectForKey:@"results"] objectAtIndex:0] mutableCopy];
     //NSLog(@"new log %@",tempDataArray);
 
@@ -253,7 +264,8 @@
 - (IBAction)startEmail:(id)sender
 {
     NSString *emailSubject = [self.titleLabel.text stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSString *emailURL = [NSString stringWithFormat:@"mailto:?subject=%@",emailSubject];
+    NSString *emailBody = [[NSString stringWithFormat:@"Hi \n\nPlease quote me on this part:\n\n%@",self.titleLabel.text] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *emailURL = [NSString stringWithFormat:@"mailto:?subject=%@&body=%@",emailSubject, emailBody];
     //NSLog(@"email %@",emailURL);
     [[UIApplication sharedApplication] openURL: [NSURL URLWithString: emailURL]];
 }

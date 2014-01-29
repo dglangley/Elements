@@ -74,16 +74,18 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    //NSLog(@"part dict %d:\n%@",self.resultsIndexPath.row, [homeViewController.results objectAtIndex:self.resultsIndexPath.row]);
-
-    //salesArray = [[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"sales"];
-    //purchArray = [[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"purchases"];
-    //availArray = [[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"availability"];
-    
     if ([[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"sales"] count] == 0)
     {
-        if ([[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"purchases"] count] == 0) { self.categorySegmentedControl.selectedSegmentIndex = 2; }
-        else { self.categorySegmentedControl.selectedSegmentIndex = 1; }
+        if ([[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"purchases"] count] == 0)
+        {
+            self.categorySegmentedControl.selectedSegmentIndex = 2;
+            [self simpleRefreshSection];
+        }
+        else
+        {
+            self.categorySegmentedControl.selectedSegmentIndex = 1;
+            [self simpleRefreshSection];
+        }
     }
 }
 
@@ -165,7 +167,7 @@
     //cellCompany.frame = CGRectMake(0, 0, 205, 21);
     cellCompany.text = [rowData objectForKey:@"company"];
     cellRef.text = @"";
-    if ([rowData objectForKey:@"ref1"] != nil) cellRef.text = [rowData objectForKey:@"ref1"];
+    if ([rowData objectForKey:@"order_number"] != nil) cellRef.text = [rowData objectForKey:@"order_number"];
     cellPrice.text = @"";
     if ([rowData objectForKey:@"price"] != nil) cellPrice.text = [rowData objectForKey:@"price"];
     cellDate.text = [rowData objectForKey:@"fdate"];
@@ -173,15 +175,17 @@
     
     // change alpha for cell of previous dates
     NSString *itemDate = [[NSString stringWithFormat:@"%@",[rowData objectForKey:@"datetime"]] substringToIndex:10];
-    if (! [itemDate isEqualToString:today])
-    {
-        cellQty.alpha = 0.5f;
-        cellCompany.alpha = 0.5f;
-        cellRef.alpha = 0.5f;
-        cellPrice.alpha = 0.5f;
-        cellDate.alpha = 0.5f;
-        cellDescr.alpha = 0.5f;
-    }
+    //NSLog(@"dates %@ %@",itemDate, today);
+    
+    float cellAlpha = 1.0f;
+    if (! [itemDate isEqualToString:today] && self.categorySegmentedControl.selectedSegmentIndex == 2) cellAlpha = 0.5f;
+
+    cellQty.alpha = cellAlpha;
+    cellCompany.alpha = cellAlpha;
+    cellRef.alpha = cellAlpha;
+    cellPrice.alpha = cellAlpha;
+    cellDate.alpha = cellAlpha;
+    cellDescr.alpha = cellAlpha;
     
     /*
     NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:cellCompany
@@ -235,7 +239,7 @@
     
     NSString *recordId = [rowData objectForKey:@"id"];
     if (recordId == nil) recordId = @"";
-    NSString *categoryId = [NSString stringWithFormat:@"%d", self.categorySegmentedControl.selectedSegmentIndex];
+    NSString *categoryId = [NSString stringWithFormat:@"%ld", (long)self.categorySegmentedControl.selectedSegmentIndex];
     if (categoryId == nil) categoryId = @"";
     NSString *orderNumber = [rowData objectForKey:@"order_number"];
     if (orderNumber == nil) orderNumber = @"";
@@ -244,7 +248,7 @@
     NSString *descr = [rowData objectForKey:@"description"];
     if (descr == nil) descr = @"";
     
-    NSMutableArray *recordArray = [[NSMutableArray alloc] initWithObjects:company,ref1,qty,price,datetime,recordId,categoryId,orderNumber,partId,descr, nil];
+    NSMutableArray *recordArray = [[NSMutableArray alloc] initWithObjects:company,orderNumber,qty,price,datetime,ref1, recordId,categoryId,partId,descr, nil];
     //NSLog(@"record %@",recordArray);
     recordsManagerViewController.recordArray = (NSArray *)recordArray;
     recordsManagerViewController.resultsIndexPath = self.resultsIndexPath;
@@ -322,14 +326,14 @@
 
 - (void)pushToRecordsManager
 {
-    NSString *categoryId = [NSString stringWithFormat:@"%d", self.categorySegmentedControl.selectedSegmentIndex];
+    NSString *categoryId = [NSString stringWithFormat:@"%ld", (long)self.categorySegmentedControl.selectedSegmentIndex];
     if (categoryId == nil) categoryId = @"";
     
     // push to records controller
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     RecordsManagerViewController *recordsManagerViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecordsManagerViewController"];
     NSString *pId = [[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"partid"];
-    NSMutableArray *recordArray = [[NSMutableArray alloc] initWithObjects:@"", @"", @"", @"", @"", @"", categoryId, @"", pId, self.title, nil];
+    NSMutableArray *recordArray = [[NSMutableArray alloc] initWithObjects:@"", @"", @"", @"", @"", @"", @"", categoryId, pId, self.title, nil];
     recordsManagerViewController.resultsIndexPath = self.resultsIndexPath;
     recordsManagerViewController.recordArray = (NSArray *)recordArray;
     

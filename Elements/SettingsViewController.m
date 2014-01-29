@@ -22,6 +22,7 @@
     self.navigationItem.title = @"Login Settings";
 
     brokerSites = [[NSArray alloc] initWithObjects:@"PowerSource",@"BrokerBin",@"Tel-Explorer", nil];
+    remoteDescrs = [[NSDictionary alloc] initWithObjectsAndKeys:@"FirstPoint",@"fp",@"E&M",@"em",@"North Georgia",@"ngt",@"Tel-Explorer",@"te",@"PowerSource",@"ps",@"BrokerBin",@"bb", nil];
     remoteNames = [[NSArray alloc] initWithObjects:@"fp",@"em",@"ngt",@"te",@"ps",@"bb", nil];
     remotes = [[NSMutableArray alloc] initWithObjects:@"N",@"Y",@"Y",@"Y",@"N",@"N",nil];
     
@@ -56,6 +57,8 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    return 2;
+    /*
     if (section == 0)
     {
         return 6;
@@ -64,15 +67,19 @@
     {
         return 3;
     }
+     */
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return [brokerSites count]+1;
+    return [remotes count];
+    //return [brokerSites count]+1;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
+    return [remoteDescrs objectForKey:[remoteNames objectAtIndex:section]];
+    /*
     if (section == 0)
     {
         return @"REMOTES";
@@ -81,36 +88,32 @@
     {
         return [brokerSites objectAtIndex:section-1];
     }
+     */
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString *cellId;
     UITableViewCell *cell;
-    UILabel *remoteLabel;
-    UISwitch *remoteSwitch;
-    BOOL remoteOn;
-    if (indexPath.section == 0)
+    UITextField *cellTextField = [[UITextField alloc] initWithFrame:CGRectMake(14, 12, self.settingsTableView.frame.size.width-100, 20)];
+
+    if (indexPath.row == 0)
     {
-        cellId = @"remotesCell";
+        UISwitch *remoteSwitch;
+        BOOL remoteOn;
+        
+        cellId = @"loginCell";
         cell = [tableView dequeueReusableCellWithIdentifier:cellId];
 
-        remoteLabel = [[UILabel alloc] initWithFrame:CGRectMake(14, 12, 40, 20)];
         remoteSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-58,7,40,10)];
-        if ([[remotes objectAtIndex:indexPath.row] isEqualToString:@"Y"])
-        {
-            remoteOn = YES;
-        }
-        else
-        {
-            remoteOn = NO;
-        }
+        if ([[remotes objectAtIndex:indexPath.section] isEqualToString:@"Y"]) { remoteOn = YES; }
+        else { remoteOn = NO; }
         
         if (cell == nil)
         {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellId];
             
-            remoteLabel.tag = 1;
+            cellTextField.tag = 1;
             remoteSwitch.tag = 2;
             remoteSwitch.transform = CGAffineTransformMakeScale(0.70, 0.70);
             [remoteSwitch setOn:remoteOn];
@@ -118,24 +121,49 @@
         }
         else
         {
-            remoteLabel = (UILabel *)[cell.contentView viewWithTag:1];
+            cellTextField = (UITextField *)[cell.contentView viewWithTag:1];
             remoteSwitch = (UISwitch *)[cell.contentView viewWithTag:2];
             [remoteSwitch setOn:remoteOn];
         }
+        cellTextField.secureTextEntry = NO;
         
-        remoteLabel.text = [[remoteNames objectAtIndex:indexPath.row] uppercaseString];
-        [cell.contentView addSubview:remoteLabel];
+        cellTextField.text = [[remoteNames objectAtIndex:indexPath.row] uppercaseString];
         [cell.contentView addSubview:remoteSwitch];
     }
+    else if (indexPath.row == 1)
+    {
+        cellId = @"passwordCell";
+        cell = [tableView dequeueReusableCellWithIdentifier:cellId];
+        if (cell == nil)
+        {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellId];
+            
+            cellTextField.tag = 1;
+        }
+        else
+        {
+            cellTextField = (UITextField *)[cell.contentView viewWithTag:1];
+        }
+        cellTextField.secureTextEntry = YES;
+    }
+    //[cellTextField setFrame:CGRectMake(14, 12, self.settingsTableView.frame.size.width-100, 20)];
+    [cell.contentView addSubview:cellTextField];
+
+    /*
     else
     {
         cellId = @"settingsCell";
         cell = [tableView dequeueReusableCellWithIdentifier:cellId];
         if (cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellId];
 
-    }
+    }*/
     
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (void)didChangeRemoteToggle:(id) sender

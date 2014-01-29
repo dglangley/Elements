@@ -7,7 +7,7 @@
 //
 
 #import "LeftViewController.h"
-//#import "HomeViewController.h"
+#import "HomeViewController.h"
 
 @interface LeftViewController ()
 
@@ -35,6 +35,13 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:YES];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:YES];
+    
     NSString *urlString = [NSString stringWithFormat:@"%s/drop/accounts.php", URL_ROOT];
     NSLog(@"accounts url %@",urlString);
     [appDelegate goURL:urlString];
@@ -89,19 +96,27 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    //homeViewController = [self.navigationController.viewControllers objectAtIndex:0];
     /*
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    HomeViewController *homeViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"HomeViewController"];
-    //homeViewController = [self.navigationController.viewControllers objectAtIndex:0];
-
+    HomeViewController *homeViewController = (HomeViewController *)[mainStoryBoard instantiateViewControllerWithIdentifier:@"HomeViewController"];
      */
-    if (indexPath.section == 2)
-    {
-        NSDictionary *textData = [[NSDictionary alloc] initWithObjectsAndKeys:cell.textLabel.text, @"entry", nil];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"updateSearchBar" object:self userInfo:textData];
 
-        //NSLog(@"%@",homeViewController.searchBar.text);
-        //[self sendToSearchBar:cell.textLabel.text];
+    NSDictionary *textData;
+    NSArray *splitter;
+    switch (indexPath.section) {
+        case 0:
+        case 1:
+            splitter = [cell.textLabel.text componentsSeparatedByString:@" "];
+            //[self.navigationController pushViewController:homeViewController animated:YES];
+            textData = [[NSDictionary alloc] initWithObjectsAndKeys:[splitter objectAtIndex:0], @"entry", nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateSearchBar" object:self userInfo:textData];
+            break;
+        case 2:
+        default:
+            textData = [[NSDictionary alloc] initWithObjectsAndKeys:cell.textLabel.text, @"entry", nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateSearchBar" object:self userInfo:textData];
+            break;
     }
     
     [self.revealController resignPresentationModeEntirely:YES animated:YES completion:^(BOOL finished){

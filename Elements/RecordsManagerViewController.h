@@ -23,6 +23,7 @@
 @property (strong, nonatomic) IBOutlet UITableViewCell *cell2;
 @property (strong, nonatomic) IBOutlet UITableViewCell *cell3;
 @property (strong, nonatomic) IBOutlet UITableViewCell *cell4;
+@property (strong, nonatomic) IBOutlet UITableViewCell *cell5;
 
 //@property (nonatomic, assign) NSInteger recordCategoryId;
 @property (strong, nonatomic) UIPickerView *companyPicker;
