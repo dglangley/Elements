@@ -66,7 +66,7 @@
     self.descrLabel.text = [appDelegate formatPartDescr:[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"system"] :[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"description"]];
     self.descrLabel.numberOfLines = 0;
     
-    self.categorySegmentedControl.selectedSegmentIndex = 0;
+    self.categorySegmentedControl.selectedSegmentIndex = 2;
     
     // set observer for updates from the next view so our data source can be updated automatically
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(simpleRefreshSection) name:@"updateDetailsResults" object:nil];
@@ -74,16 +74,21 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    if ([[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"sales"] count] == 0)
+    if ([[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"availability"] count] == 0)
     {
-        if ([[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"purchases"] count] == 0)
+        if ([[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"sales"] count] > 0)
         {
-            self.categorySegmentedControl.selectedSegmentIndex = 2;
+            self.categorySegmentedControl.selectedSegmentIndex = 1;
+            [self simpleRefreshSection];
+        }
+        else if ([[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"purchases"] count] > 0)
+        {
+            self.categorySegmentedControl.selectedSegmentIndex = 3;
             [self simpleRefreshSection];
         }
         else
         {
-            self.categorySegmentedControl.selectedSegmentIndex = 1;
+            self.categorySegmentedControl.selectedSegmentIndex = 0;
             [self simpleRefreshSection];
         }
     }
@@ -109,13 +114,16 @@
     switch (self.categorySegmentedControl.selectedSegmentIndex)
     {
         case 0:
-            return [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"sales"] count];
+            return [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"demand"] count];
             break;
         case 1:
-            return [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"purchases"] count];
+            return [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"sales"] count];
             break;
         case 2:
             return [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"availability"] count];
+            break;
+        case 3:
+            return [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"purchases"] count];
             break;
     }
 
@@ -152,13 +160,16 @@
     switch (self.categorySegmentedControl.selectedSegmentIndex)
     {
         case 0:
-            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"sales"] objectAtIndex:indexPath.row];
+            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"demand"] objectAtIndex:indexPath.row];
             break;
         case 1:
-            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"purchases"] objectAtIndex:indexPath.row];
+            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"sales"] objectAtIndex:indexPath.row];
             break;
         case 2:
             rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"availability"] objectAtIndex:indexPath.row];
+            break;
+        case 3:
+            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"purchases"] objectAtIndex:indexPath.row];
             break;
     }
 
@@ -211,13 +222,16 @@
     switch (self.categorySegmentedControl.selectedSegmentIndex)
     {
         case 0:
-            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"sales"] objectAtIndex:indexPath.row];
+            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"demand"] objectAtIndex:indexPath.row];
             break;
         case 1:
-            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"purchases"] objectAtIndex:indexPath.row];
+            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"sales"] objectAtIndex:indexPath.row];
             break;
         case 2:
             rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"availability"] objectAtIndex:indexPath.row];
+            break;
+        case 3:
+            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"purchases"] objectAtIndex:indexPath.row];
             break;
     }
     //NSLog(@"data %@",rowData);

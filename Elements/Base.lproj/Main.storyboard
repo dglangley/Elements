@@ -111,9 +111,10 @@
                                 <rect key="frame" x="-5" y="115" width="330" height="29"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <segments>
+                                    <segment title="Demand"/>
                                     <segment title="Sales"/>
-                                    <segment title="Purchases"/>
                                     <segment title="Availability"/>
+                                    <segment title="Purchases"/>
                                 </segments>
                                 <connections>
                                     <action selector="didChangeSegmentedControl:" destination="m4o-gq-r3m" eventType="valueChanged" id="Lwm-p6-C87"/>

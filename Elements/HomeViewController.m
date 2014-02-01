@@ -47,7 +47,8 @@
     [appDelegate addKeyboardBarWithOptions:NO];
     self.searchBar.inputAccessoryView = appDelegate.keyboardToolbar;
     pg = 0;// number that represents how many paged results
-    
+    isLoadingOffsetResults = NO;// don't load results while loading more
+
     //call the refresh function
     [appDelegate.refreshControl addTarget:self action:@selector(refreshTableView)
                   forControlEvents:UIControlEventValueChanged];
@@ -67,13 +68,13 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     userLongPressDetected = NO;
-    
+    isLoadingOffsetResults = NO;
+
     UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc]
                                           initWithTarget:self action:@selector(userDidLongPress:)];
     lpgr.minimumPressDuration = 1.0; //seconds
@@ -81,8 +82,31 @@
     [self.resultsTableView addGestureRecognizer:lpgr];
 }
 
+- (void)scrollViewDidScroll :(UIScrollView *)scrollView
+{
+    NSInteger currentOffset = scrollView.contentOffset.y;
+    
+    // offset at the bottom of the scrollview
+    NSInteger maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height;
+    
+    //NSLog(@"offsets %d %f %f %f", currentOffset, lastScrollOffset.y, scrollView.contentSize.height, scrollView.frame.size.height);
+
+    // load next page of results when scrolling reaches bottom of scrollview
+    if (currentOffset > lastScrollOffset.y && currentOffset > 0
+        && currentOffset > maximumOffset && isLoadingOffsetResults == NO)
+    {
+        pg++;
+        NSLog(@"pg %d",pg);
+        [self loadResults];
+        isLoadingOffsetResults = YES;
+    }
+    lastScrollOffset = scrollView.contentOffset;
+}
+
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
+    pg = 0;
+    
     // remove previous-search label at bottom of view if it's there
     UILabel *searchLabel = (UILabel *)[self.view viewWithTag:11];
     if (searchLabel != nil)
@@ -118,6 +142,7 @@
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
+    pg = 0;// reset paged results because search entry changed
     return;
 }
 
@@ -197,7 +222,17 @@
     {
         if (! [appDelegate.jsonResults objectForKey:@"results"]) return;
         
-        self.results = [appDelegate.jsonResults objectForKey:@"results"];
+        // if loading offsets, append to array
+        if (isLoadingOffsetResults == YES)
+        {
+            isLoadingOffsetResults = NO;
+            self.results = [[self.results arrayByAddingObjectsFromArray:[appDelegate.jsonResults objectForKey:@"results"]] mutableCopy];
+        }
+        else
+        {
+            self.results = [appDelegate.jsonResults objectForKey:@"results"];
+        }
+        
         if ([masterResults count] == 0 && [self.searchBar.text isEqualToString:@""]
             && self.resultsTypeSegmentedControl.selectedSegmentIndex == 0)
         {
@@ -249,15 +284,6 @@
     userLongPressDetected = NO;
     self.searchBar.text = searchStr;
     [self loadResults];
-    
-    /*
-    // push to details controller
-    UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    HomeViewController *homeViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"HomeViewController"];
-    homeViewController.searchBar.text = searchStr;
-     
-    [self.navigationController pushViewController:homeViewController animated:YES];
-     */
 }
 
 -(void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event

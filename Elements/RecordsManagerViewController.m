@@ -210,10 +210,10 @@
 {
     NSString *company = [[(UITextField *)[self.cell0 viewWithTag:1] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (company == nil) company = @"";
-    company = [appDelegate stringByEncodingAmpersands:company];
+    company = [appDelegate stringByEncodingAmpersands:[[company stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     NSString *orderNum = [[(UITextField *)[self.cell1 viewWithTag:2] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (orderNum == nil) orderNum = @"";
-    //orderNum = [orderNum stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    orderNum = [orderNum stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSString *qty = [[(UITextField *)[self.cell2 viewWithTag:3] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (qty == nil) qty = @"";
     NSString *price = [[(UITextField *)[self.cell3 viewWithTag:4] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -223,7 +223,7 @@
     //date = [date stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSString *ref1 = [[(UITextField *)[self.cell5 viewWithTag:6] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (ref1 == nil) ref1 = @"";
-    //ref1 = [ref1 stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    ref1 = [ref1 stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSString *recordId = [[self.recordArray objectAtIndex:6] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (recordId == nil) recordId = @"";
     NSString *categoryId = [[self.recordArray objectAtIndex:7] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -234,7 +234,7 @@
     NSString *masterPartId = [[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"partid"];
     NSString *queryString = [NSString stringWithFormat:@"%s/drop/save_record.php?company=%@&qty=%@&ref1=%@&price=%@&datetime=%@&recordid=%@&categoryid=%@&order_number=%@&partid=%@&master_partid=%@",URL_ROOT,company,qty,ref1,price,date,recordId,categoryId,orderNum,partId,masterPartId];
     NSLog(@"records url %@",queryString);
-    [appDelegate goURL:queryString];
+    [appDelegate requestURL:queryString];
     
     [appDelegate addUniqueObserver:self selector:@selector(userAlertView) name:@"connectionObserver" object:nil];
 }

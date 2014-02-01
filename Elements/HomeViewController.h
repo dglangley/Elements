@@ -17,6 +17,8 @@
     NSMutableArray *masterResults;
     BOOL userLongPressDetected;
     int pg;
+    CGPoint lastScrollOffset;
+    BOOL isLoadingOffsetResults;
 }
 
 @property (strong, nonatomic) NSMutableArray *results;
