@@ -33,18 +33,23 @@
     
     homeViewController = [self.navigationController.viewControllers objectAtIndex:0];
 
-    if ([[self.recordArray objectAtIndex:6] isEqualToString:@"0"])//sale
+    NSLog(@"obj %@",self.recordArray );
+    if ([[self.recordArray objectAtIndex:7] isEqualToString:@"0"])//demand
+    {
+        self.title = @"Demand";
+    }
+    else if ([[self.recordArray objectAtIndex:7] isEqualToString:@"1"])//sale
     {
         self.title = @"Sales Order";
     }
-    else if ([[self.recordArray objectAtIndex:6] isEqualToString:@"1"])//purchase
-    {
-        self.title = @"Purchase Order";
-    }
-    else
-    //else if ([[self.recordArray objectAtIndex:7] isEqualToString:@""])
+    else if ([[self.recordArray objectAtIndex:7] isEqualToString:@"2"])//availability
     {
         self.title = @"Availability";
+    }
+    else
+    //else if ([[self.recordArray objectAtIndex:6] isEqualToString:@"3"])
+    {
+        self.title = @"Purchase Order";
     }
     NSString *descr = [[self.recordArray objectAtIndex:9] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (descr == nil) descr = @"";
@@ -220,7 +225,7 @@
     if (price == nil) price = @"";
     NSString *date = [[(UITextField *)[self.cell4 viewWithTag:5] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (date == nil) date = @"";
-    //date = [date stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    date = [date stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSString *ref1 = [[(UITextField *)[self.cell5 viewWithTag:6] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (ref1 == nil) ref1 = @"";
     ref1 = [ref1 stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];

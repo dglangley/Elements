@@ -74,6 +74,8 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:YES];
+    
     if ([[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"availability"] count] == 0)
     {
         if ([[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"sales"] count] > 0)
@@ -92,6 +94,19 @@
             [self simpleRefreshSection];
         }
     }
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:YES];
+    
+    userLongPressDetected = NO;
+    
+    UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc]
+                                          initWithTarget:self action:@selector(userDidLongPress:)];
+    lpgr.minimumPressDuration = 1.0; //seconds
+    lpgr.delegate = self;
+    [self.resultsTableView addGestureRecognizer:lpgr];
 }
 
 - (void)didReceiveMemoryWarning
@@ -291,6 +306,45 @@
 {
     return 58.0f;
 }
+
+//
+
+- (void)userDidLongPress:(UILongPressGestureRecognizer *)gestureRecognizer
+{
+    if (gestureRecognizer.state != UIGestureRecognizerStateBegan) return;
+    
+    userLongPressDetected = YES;
+    CGPoint p = [gestureRecognizer locationInView:self.resultsTableView];
+    
+    NSIndexPath *indexPath = [self.resultsTableView indexPathForRowAtPoint:p];
+    if (indexPath == nil) return;//long pressed on table but not on row
+    
+    NSDictionary *avail = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"availability"] objectAtIndex:indexPath.row];
+    NSString *sourceUrl;
+    //NSLog(@"company is %@",[[avail objectForKey:@"company"] substringToIndex:4]);
+    if ([[[avail objectForKey:@"company"] substringToIndex:4] isEqualToString:@"eBay"])
+    {
+        sourceUrl = [NSString stringWithFormat:@"ebay://launch?itm=%@",[avail objectForKey:@"source"]];
+    }
+    else if ([[avail objectForKey:@"source"] isEqualToString:@"TE"])
+    {
+        UILabel *descrLabel = (UILabel *)[[self.resultsTableView cellForRowAtIndexPath:indexPath].contentView viewWithTag:6];
+        NSString *descr = [descrLabel.text stringByReplacingOccurrencesOfString:@"  " withString:@" "];
+        descr = [descr stringByReplacingOccurrencesOfString:@" " withString:@"\n"];
+        sourceUrl = [[NSString stringWithFormat:@"http://tel-explorer.com/Main_Page/Search/Multi_srch_go.php?submit=submit&multipart=%@",descr] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    }
+    else
+    {
+        return;
+    }
+    NSLog(@"source url %@",sourceUrl);
+
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:sourceUrl]];
+    
+    userLongPressDetected = NO;
+    //[self loadResults];
+}
+
 
 - (void)simpleRefreshSection
 {

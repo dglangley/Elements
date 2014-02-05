@@ -12,7 +12,7 @@
 
 @class RecordsManagerViewController;
 
-@interface PartDetailsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate>
+@interface PartDetailsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate>
 {
 //    UIPickerView *pricePicker;
     NSArray *salesArray;
@@ -20,6 +20,7 @@
     NSArray *availArray;
     NSString *today;
     HomeViewController *homeViewController;
+    BOOL userLongPressDetected;
 }
 
 @property (strong, nonatomic) IBOutlet UITextField *qtyTextField;

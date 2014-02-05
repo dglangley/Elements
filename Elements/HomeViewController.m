@@ -93,7 +93,7 @@
 
     // load next page of results when scrolling reaches bottom of scrollview
     if (currentOffset > lastScrollOffset.y && currentOffset > 0
-        && currentOffset > maximumOffset && isLoadingOffsetResults == NO)
+        && currentOffset > maximumOffset+150 && isLoadingOffsetResults == NO)
     {
         pg++;
         NSLog(@"pg %d",pg);
@@ -111,8 +111,8 @@
     UILabel *searchLabel = (UILabel *)[self.view viewWithTag:11];
     if (searchLabel != nil)
     {
-        [appDelegate fadeOutViewWithDelay:searchLabel :0.4];
-        userLongPressDetected = NO;
+        //[appDelegate fadeOutViewWithDelay:searchLabel :0.4];
+        //userLongPressDetected = NO;
     }
 
     if ([self.searchBar.text isEqualToString:@""])
@@ -233,8 +233,10 @@
             self.results = [appDelegate.jsonResults objectForKey:@"results"];
         }
         
-        if ([masterResults count] == 0 && [self.searchBar.text isEqualToString:@""]
-            && self.resultsTypeSegmentedControl.selectedSegmentIndex == 0)
+        // changed 2-4-14 because the master list wasn't getting updated when I really wanted it to
+        //if ([masterResults count] == 0 && [self.searchBar.text isEqualToString:@""]
+        //    && self.resultsTypeSegmentedControl.selectedSegmentIndex == 0)
+        if ([self.searchBar.text isEqualToString:@""] && self.resultsTypeSegmentedControl.selectedSegmentIndex == 0)
         {
             masterResults = self.results;
         }
@@ -275,7 +277,7 @@
     }
     
     NSDictionary *rowData = [self.results objectAtIndex:indexPath.row];
-    NSString *searchStr = [rowData objectForKey:@"heci"];
+    NSString *searchStr = [[rowData objectForKey:@"heci"] substringToIndex:7];
     if ([searchStr isEqualToString:@""] || searchStr == nil)
     {
         searchStr = [rowData objectForKey:@"part"];
@@ -458,7 +460,7 @@
 
     NSString *labelString = [appDelegate formatPartTitle:[rowData objectForKey:@"part"] :[rowData objectForKey:@"rel"] :[rowData objectForKey:@"heci"]];
     topLabel.text = labelString;
-    if ([rowData objectForKey:@"rank"] && [[rowData objectForKey:@"rank"] isEqualToString:@"2"])
+    if ([rowData objectForKey:@"rank"] && [[rowData objectForKey:@"rank"] isEqualToString:@"3"])
     {
         topLabel.font = [UIFont boldSystemFontOfSize:12.0f];
     }

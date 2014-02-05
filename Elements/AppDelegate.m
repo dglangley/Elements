@@ -244,7 +244,7 @@
     NSMutableURLRequest *theRequest=[NSMutableURLRequest
                                      requestWithURL:[NSURL URLWithString:queryString]
                                      cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                     timeoutInterval:12.0];
+                                     timeoutInterval:15.0];
 
     [appDelegate loadingViewWillAppear];
     
