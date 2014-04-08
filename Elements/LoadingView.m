@@ -33,7 +33,8 @@
         // Create "Loading" Label
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake((self.bounds.size.width/2)-(self.loadingBackgroundView.bounds.size.width/4),
         (self.bounds.size.height/2)+(self.loadingBackgroundView.bounds.size.height/10),94,25)];
-        
+    
+    
         // Setup "Loading" label
         label.backgroundColor = [UIColor clearColor];
         label.textColor = [UIColor whiteColor];

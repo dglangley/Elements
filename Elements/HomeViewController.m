@@ -8,6 +8,7 @@
 
 #import "HomeViewController.h"
 #import "PartDetailsViewController.h"
+#import "UIImageView+WebCache.h"
 
 @interface HomeViewController ()
 
@@ -41,6 +42,15 @@
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
     {
     }
+    
+    //disable panning across entire view, but enable for navbar alone
+    [self.revealController setRecognizesPanningOnFrontView:NO];
+    // enable swipe gesture on nav bar
+    [self.navigationController.navigationBar addGestureRecognizer:self.revealController.revealPanGestureRecognizer];
+    
+    [appDelegate.dateFormatter setDateFormat:@"MM-dd"];
+    today = [appDelegate.dateFormatter stringFromDate:[NSDate date]];
+    //NSLog(@"today %@",today);
     
     self.resultsTypeSegmentedControl.selectedSegmentIndex = 0;
     
@@ -349,14 +359,17 @@
     NSString *cellId = @"resultCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     
-    UILabel *qtyLabel = [[UILabel alloc] initWithFrame:CGRectMake(3,16,18,20)];
-    UILabel *topLabel = [[UILabel alloc] initWithFrame:CGRectMake(25,2,220,30)];
-    UILabel *bottomLabel = [[UILabel alloc] initWithFrame:CGRectMake(25,28,240,20)];
-    UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-70,45,65,10)];
+    UILabel *qtyLabel = [[UILabel alloc] initWithFrame:CGRectMake(70,40,30,20)];
+    UILabel *topLabel = [[UILabel alloc] initWithFrame:CGRectMake(5,0,self.view.bounds.size.width-10,26)];
+    UILabel *bottomLabel = [[UILabel alloc] initWithFrame:CGRectMake(5,26,self.view.bounds.size.width-10,12)];
+    UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-80,46,50,10)];
     UILabel *srcLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-170,40,95,20)];
+    /*
     UISwitch *ignitorSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-50,15,40,10)];
-    UILabel *companyLabel = [[UILabel alloc] initWithFrame:CGRectMake(25,46,200,20)];
-    UILabel *priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-70,4,62,14)];
+     */
+    UILabel *companyLabel = [[UILabel alloc] initWithFrame:CGRectMake(100,40,160,20)];
+    UILabel *priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-70,100,65,14)];
+    UILabel *historyLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, 80, 160, 40)];
 
     NSMutableDictionary *rowData = [self.results objectAtIndex:indexPath.row];
 
@@ -377,14 +390,16 @@
         
         qtyLabel.tag = 21;
         qtyLabel.font = [UIFont systemFontOfSize:16];
+        qtyLabel.textColor = [UIColor colorWithRed:143.0/255.0 green:94.0/255.0 blue:23.0/255.0 alpha:1.0f];
         qtyLabel.adjustsFontSizeToFitWidth = YES;
         qtyLabel.contentMode = UIViewContentModeScaleAspectFit;
         [cell.contentView addSubview:qtyLabel];
 
         topLabel.tag = 22;
-        topLabel.font = [UIFont systemFontOfSize:12];
+        topLabel.font = [UIFont systemFontOfSize:18];
         topLabel.numberOfLines = 0;
         topLabel.adjustsFontSizeToFitWidth = YES;
+        topLabel.textAlignment = NSTextAlignmentCenter;
         topLabel.contentMode = UIViewContentModeScaleAspectFit;
         topLabel.minimumScaleFactor = 0.5f;
         [cell.contentView addSubview:topLabel];
@@ -392,8 +407,9 @@
         bottomLabel.tag = 23;
         bottomLabel.font = [UIFont systemFontOfSize:10];
         bottomLabel.textColor = [UIColor grayColor];
-        bottomLabel.numberOfLines = 0;
+        bottomLabel.numberOfLines = 1;
         bottomLabel.adjustsFontSizeToFitWidth = YES;
+        bottomLabel.textAlignment = NSTextAlignmentCenter;
         bottomLabel.contentMode = UIViewContentModeScaleAspectFit;
         [cell.contentView addSubview:bottomLabel];
 
@@ -411,8 +427,9 @@
         srcLabel.adjustsFontSizeToFitWidth = YES;
         srcLabel.contentMode = UIViewContentModeScaleAspectFit;
         srcLabel.textAlignment = NSTextAlignmentRight;
-        [cell.contentView addSubview:srcLabel];
+        //[cell.contentView addSubview:srcLabel];
         
+        /*
         ignitorSwitch.tag = 26;//ignitorId;
         //[[ignitorSwitch superview] setTag:ignitorId];
         ignitorSwitch.transform = CGAffineTransformMakeScale(0.65, 0.65);
@@ -420,21 +437,32 @@
         [ignitorSwitch addTarget:self action:@selector(toggleIgnitor:) forControlEvents:UIControlEventValueChanged];
         [ignitorSwitch setOn:igniteOn];
         [cell.contentView addSubview:ignitorSwitch];
+         */
         
         companyLabel.tag = 27;
         companyLabel.font = [UIFont systemFontOfSize:12];
         companyLabel.textColor = [UIColor colorWithRed:143.0/255.0 green:94.0/255.0 blue:23.0/255.0 alpha:1.0f];
         companyLabel.adjustsFontSizeToFitWidth = YES;
+        //companyLabel.textAlignment = NSTextAlignmentRight;
         companyLabel.contentMode = UIViewContentModeScaleAspectFit;
         [cell.contentView addSubview:companyLabel];
         
         priceLabel.tag = 28;
-        priceLabel.font = [UIFont systemFontOfSize:12];
+        priceLabel.font = [UIFont systemFontOfSize:14];
         priceLabel.textColor = [UIColor blackColor];
         priceLabel.adjustsFontSizeToFitWidth = YES;
         priceLabel.contentMode = UIViewContentModeScaleAspectFit;
         priceLabel.textAlignment = NSTextAlignmentRight;
         [cell.contentView addSubview:priceLabel];
+        
+        historyLabel.tag = 29;
+        historyLabel.font = [UIFont systemFontOfSize:12];
+        historyLabel.textColor = [UIColor grayColor];
+        historyLabel.numberOfLines = 0;
+        historyLabel.adjustsFontSizeToFitWidth = YES;
+        //companyLabel.textAlignment = NSTextAlignmentRight;
+        historyLabel.contentMode = UIViewContentModeScaleAspectFit;
+        [cell.contentView addSubview:historyLabel];
     }
     else
     {
@@ -443,11 +471,24 @@
         bottomLabel = (UILabel *)[cell.contentView viewWithTag:23];
         dateLabel = (UILabel *)[cell.contentView viewWithTag:24];
         srcLabel = (UILabel *)[cell.contentView viewWithTag:25];
+        /*
         ignitorSwitch = (UISwitch *)[cell.contentView viewWithTag:26];
         [ignitorSwitch setOn:igniteOn];
+         */
         companyLabel = (UILabel *)[cell.contentView viewWithTag:27];
         priceLabel = (UILabel *)[cell.contentView viewWithTag:28];
+        historyLabel = (UILabel *)[cell.contentView viewWithTag:29];
     }
+    
+    //cell.imageView = nil;
+    if (! [[rowData objectForKey:@"heci"] isEqualToString:@""])
+    {
+        NSURL *imgUrl = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.bell-enterprise.com/pictures/thumbs/%@.jpg",[[rowData objectForKey:@"heci"] substringToIndex:7]]];
+        [[cell.imageView layer] setMagnificationFilter:kCAFilterNearest];
+        [cell.imageView setTransform:CGAffineTransformMakeScale(.55, .55)];
+        [cell.imageView setImageWithURL:imgUrl placeholderImage:[UIImage imageNamed:@"no-picture.png"]];
+    }
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
     NSString *qty = @"";
     if ([rowData objectForKey:@"qty"] != nil
@@ -462,11 +503,11 @@
     topLabel.text = labelString;
     if ([rowData objectForKey:@"rank"] && [[rowData objectForKey:@"rank"] isEqualToString:@"3"])
     {
-        topLabel.font = [UIFont boldSystemFontOfSize:12.0f];
+        topLabel.font = [UIFont boldSystemFontOfSize:14.0f];
     }
     else
     {
-        topLabel.font = [UIFont systemFontOfSize:12.0f];
+        topLabel.font = [UIFont systemFontOfSize:14.0f];
     }
     
     NSString *descr = [appDelegate formatPartDescr:[rowData objectForKey:@"system"] :[rowData objectForKey:@"description"]];
@@ -487,8 +528,17 @@
         dateTime = [appDelegate.dateFormatter dateFromString:[rowData objectForKey:@"datetime"]];
         // this is the date/time we're formatting to
         [appDelegate.dateFormatter setDateFormat:@"MM/dd, h:mma"];
+        date = [[appDelegate.dateFormatter stringFromDate:dateTime] lowercaseString];
         
-        date = [NSString stringWithFormat:@"%@",[appDelegate.dateFormatter stringFromDate:dateTime]];
+        [appDelegate.dateFormatter setDateFormat:@"MM-dd"];
+        NSString *dateMMdd = [appDelegate.dateFormatter stringFromDate:dateTime];
+
+        //NSLog(@"date %@ = %@",dateMMdd, today);
+        if ([dateMMdd isEqualToString:today])
+        {
+            [appDelegate.dateFormatter setDateFormat:@"h:mma"];
+            date = [[NSString stringWithFormat:@"today %@",[appDelegate.dateFormatter stringFromDate:dateTime]] lowercaseString];
+        }
     }
     dateLabel.text = date;
     
@@ -519,11 +569,40 @@
     }
     priceLabel.text = price;
     
+    NSArray *sales = [rowData objectForKey:@"sales"];
+    NSArray *purch = [rowData objectForKey:@"purchases"];
+    NSString *historyStr;
+    if ([sales count] > 0 || [purch count] > 0)
+    {
+        NSString *sPost = @"";
+        NSString *pPost = @"";
+        if ([sales count] != 1) sPost = @"s";
+        if ([purch count] != 1) pPost = @"s";
+        
+        if ([sales count] > 0 && [purch count] > 0)
+        {
+            historyStr = [NSString stringWithFormat:@"%d sale%@\n%d purchase%@", [sales count], sPost, [purch count], pPost];
+        }
+        else if ([sales count] > 0)
+        {
+            historyStr = [NSString stringWithFormat:@"%d sale%@", [sales count], sPost];
+        }
+        else
+        {
+            historyStr = [NSString stringWithFormat:@"%d purchase%@", [purch count], pPost];
+        }
+    }
+    historyLabel.text = historyStr;
+    
+    cell.userInteractionEnabled = YES;
+    
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    return 128.0f;
+    
     // when there's no company to list, the cell height can be smaller
     if ([[[self.results objectAtIndex:indexPath.row] objectForKey:@"company"] isEqualToString:@""])
     {
@@ -557,6 +636,29 @@
     
     [self.navigationController pushViewController:partDetailsViewController animated:YES];
     //[self performSegueWithIdentifier:@"partDetailsSegue" sender:self];
+}
+
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return UITableViewCellEditingStyleDelete;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // user is deleting item
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        NSString *pId = [[self.results objectAtIndex:indexPath.row] objectForKey:@"id"];
+        NSString *urlString = [NSString stringWithFormat:@"%s/drop/save_ignitors.php?partid=%@&save_to_on=0", URL_ROOT, pId];
+        NSLog(@"ignitor url %@",urlString);
+        [appDelegate goURL:urlString];
+    }
 }
 
 - (void)toggleIgnitor:(id) sender

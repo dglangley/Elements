@@ -103,6 +103,8 @@
 - (void)loadingViewWillAppear
 {
     self.activityIndicatorView.center = self.tabBarViewController.view.center;
+    self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
+    self.activityIndicatorView.color = [UIColor colorWithRed:0.0f green:133.0f/255.0f blue:1.0f alpha:1.0f];
     [self.tabBarViewController.view addSubview:self.activityIndicatorView];
     [self.activityIndicatorView startAnimating];
     

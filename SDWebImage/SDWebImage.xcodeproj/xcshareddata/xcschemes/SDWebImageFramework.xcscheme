@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CF465F10186C15080033277E"
-               BuildableName = "Elements.app"
-               BlueprintName = "Elements"
-               ReferencedContainer = "container:Elements.xcodeproj">
+               BlueprintIdentifier = "539F912B16316D2D00160719"
+               BuildableName = "SDWebImageFramework"
+               BlueprintName = "SDWebImageFramework"
+               ReferencedContainer = "container:SDWebImage.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -28,26 +28,7 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CF465F34186C15080033277E"
-               BuildableName = "ElementsTests.xctest"
-               BlueprintName = "ElementsTests"
-               ReferencedContainer = "container:Elements.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "CF465F10186C15080033277E"
-            BuildableName = "Elements.app"
-            BlueprintName = "Elements"
-            ReferencedContainer = "container:Elements.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </TestAction>
    <LaunchAction
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
@@ -58,15 +39,6 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "CF465F10186C15080033277E"
-            BuildableName = "Elements.app"
-            BlueprintName = "Elements"
-            ReferencedContainer = "container:Elements.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -76,15 +48,6 @@
       useCustomWorkingDirectory = "NO"
       buildConfiguration = "Release"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "CF465F10186C15080033277E"
-            BuildableName = "Elements.app"
-            BlueprintName = "Elements"
-            ReferencedContainer = "container:Elements.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

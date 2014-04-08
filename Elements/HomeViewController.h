@@ -19,6 +19,7 @@
     int pg;
     CGPoint lastScrollOffset;
     BOOL isLoadingOffsetResults;
+    NSString *today;
 }
 
 @property (strong, nonatomic) NSMutableArray *results;

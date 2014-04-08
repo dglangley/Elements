@@ -33,7 +33,7 @@
     
     homeViewController = [self.navigationController.viewControllers objectAtIndex:0];
 
-    NSLog(@"obj %@",self.recordArray );
+    //NSLog(@"obj %@",self.recordArray );
     if ([[self.recordArray objectAtIndex:7] isEqualToString:@"0"])//demand
     {
         self.title = @"Demand";
@@ -54,6 +54,8 @@
     NSString *descr = [[self.recordArray objectAtIndex:9] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (descr == nil) descr = @"";
     self.titleLabel.text = descr;
+    
+    cellLabels = [[NSArray alloc] initWithObjects:@"Company", @"Order No.", @"Qty", @"Price", @"Date", @"Ref No.", nil];
     
     // initialize
     self.companyArray = [[NSMutableArray alloc] init];
@@ -89,7 +91,7 @@
     //NSLog(@"company %d",[companyData count]);
     
     NSMutableDictionary *eachCompany = [[NSMutableDictionary alloc] init];
-    UITextField *companyTextField = (UITextField *)[self.cell0 viewWithTag:1];
+    UITextField *companyTextField = (UITextField *)[self.view viewWithTag:1];
     
     [self.companyArray addObject:@"- New Company -"];
     NSInteger i = 0;
@@ -124,41 +126,25 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    /*
-    NSString *cellId = [NSString stringWithFormat:@"cell%d",indexPath.row];
+    NSString *cellId = @"recordCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     if (cell == nil)
     {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellId];
     }
-     */
-    UITableViewCell *cell;
-    switch (indexPath.row) {
-        case 0:
-            cell = self.cell0;
-            break;
-        case 1:
-            cell = self.cell1;
-            break;
-        case 2:
-            cell = self.cell2;
-            break;
-        case 3:
-            cell = self.cell3;
-            break;
-        case 4:
-            cell = self.cell4;
-            break;
-        case 5:
-            cell = self.cell5;
-            break;
-        default:
-            cell = self.cell5;
-            break;
-    }
-    UITextField *cellTextField = (UITextField *)[cell.contentView viewWithTag:indexPath.row+1];
+    
+    UILabel *cellLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, 66, 38)];
+    UITextField *cellTextField = [[UITextField alloc] initWithFrame:CGRectMake(85, 0, 215, 38)];
+    
+    [cellLabel setText:[cellLabels objectAtIndex:indexPath.row]];
+    [cell addSubview:cellLabel];
+    
+    //UITextField *cellTextField = (UITextField *)[cell.contentView viewWithTag:indexPath.row+1];
+    [cellTextField setPlaceholder:[cellLabels objectAtIndex:indexPath.row]];
+    [cellTextField setText:[self.recordArray objectAtIndex:indexPath.row]];
+    [cellTextField setTag:(indexPath.row+1)];
+    [cell addSubview:cellTextField];
 
-    cellTextField.text = [self.recordArray objectAtIndex:indexPath.row];
     //NSLog(@"text %@",cellTextField.text);
 
     //cellTextField.contentMode = UIViewContentModeScaleAspectFit;
@@ -175,12 +161,15 @@
         [UIView commitAnimations];
          */
         
-        //UITextField *companyTextField = (UITextField *)[self.cell0 viewWithTag:1];
+        //UITextField *companyTextField = (UITextField *)[self.view viewWithTag:1];
         //[companyTextField setInputView:self.companyPicker];
+        
+        // attach company picker as input view for the company field
         [cellTextField setInputView:self.companyPicker];
     }
     else if (indexPath.row == 4)
     {
+        // setup date picker for date field
         NSDate *recordDate;
         NSString *dateStr;
         if (cellTextField.text == nil || [cellTextField.text isEqualToString:@""])
@@ -194,11 +183,11 @@
         }
         [appDelegate.dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
         recordDate = [[appDelegate dateFormatter] dateFromString:dateStr];
-        //NSLog(@"date %@",recordDate);
 
         [dateTimePicker setDate:recordDate];
         [cellTextField setInputView:dateTimePicker];
     }
+    // attach keyboard as accessoryview for input mode
     [cellTextField setInputAccessoryView:appDelegate.keyboardToolbar];
 
     [cell addSubview:cellTextField];
@@ -213,20 +202,20 @@
 
 - (IBAction)saveRecord:(id)sender
 {
-    NSString *company = [[(UITextField *)[self.cell0 viewWithTag:1] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *company = [[(UITextField *)[self.view viewWithTag:1] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (company == nil) company = @"";
     company = [appDelegate stringByEncodingAmpersands:[[company stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    NSString *orderNum = [[(UITextField *)[self.cell1 viewWithTag:2] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *orderNum = [[(UITextField *)[self.view viewWithTag:2] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (orderNum == nil) orderNum = @"";
     orderNum = [orderNum stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSString *qty = [[(UITextField *)[self.cell2 viewWithTag:3] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *qty = [[(UITextField *)[self.view viewWithTag:3] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (qty == nil) qty = @"";
-    NSString *price = [[(UITextField *)[self.cell3 viewWithTag:4] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *price = [[(UITextField *)[self.view viewWithTag:4] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (price == nil) price = @"";
-    NSString *date = [[(UITextField *)[self.cell4 viewWithTag:5] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *date = [[(UITextField *)[self.view viewWithTag:5] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (date == nil) date = @"";
     date = [date stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSString *ref1 = [[(UITextField *)[self.cell5 viewWithTag:6] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *ref1 = [[(UITextField *)[self.view viewWithTag:6] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (ref1 == nil) ref1 = @"";
     ref1 = [ref1 stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSString *recordId = [[self.recordArray objectAtIndex:6] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -312,7 +301,7 @@
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-    UITextField *companyTextField = (UITextField *)[self.cell0 viewWithTag:1];
+    UITextField *companyTextField = (UITextField *)[self.view viewWithTag:1];
     if ([[self.companyArray objectAtIndex:row] isEqualToString:@"- New Company -"])
     {
         [companyTextField resignFirstResponder];
@@ -338,14 +327,14 @@
 
 - (void)dateTimeDidChange:(id)sender
 {
-    UITextField *dateTimeTextField = (UITextField *)[self.cell4 viewWithTag:5];
+    UITextField *dateTimeTextField = (UITextField *)[self.view viewWithTag:5];
     NSString *dateTimeStr = [[appDelegate dateFormatter] stringFromDate:dateTimePicker.date];
     dateTimeTextField.text = dateTimeStr;
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    if (textField != (UITextField *)[self.cell0 viewWithTag:1]) return;
+    if (textField != (UITextField *)[self.view viewWithTag:1]) return;
 
     //if (textField.inputAccessoryView != nil)
     //companyTextField.inputAccessoryView = nil;
@@ -354,7 +343,7 @@
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-    if (textField != (UITextField *)[self.cell0 viewWithTag:1]) return;
+    if (textField != (UITextField *)[self.view viewWithTag:1]) return;
     
     [textField setInputView:self.companyPicker];
 }
