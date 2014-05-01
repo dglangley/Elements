@@ -344,6 +344,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Langley Assets, LLC";
 				TargetAttributes = {
+					CF465F10186C15080033277E = {
+						DevelopmentTeam = PNREV37427;
+					};
 					CF465F34186C15080033277E = {
 						TestTargetID = CF465F10186C15080033277E;
 					};

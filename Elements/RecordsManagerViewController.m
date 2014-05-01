@@ -225,7 +225,7 @@
     NSString *partId = [[self.recordArray objectAtIndex:8] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (partId == nil) partId = @"";
     
-    NSString *masterPartId = [[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"partid"];
+    NSString *masterPartId = [[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"partid"];
     NSString *queryString = [NSString stringWithFormat:@"%s/drop/save_record.php?company=%@&qty=%@&ref1=%@&price=%@&datetime=%@&recordid=%@&categoryid=%@&order_number=%@&partid=%@&master_partid=%@",URL_ROOT,company,qty,ref1,price,date,recordId,categoryId,orderNum,partId,masterPartId];
     NSLog(@"records url %@",queryString);
     [appDelegate requestURL:queryString];
@@ -246,7 +246,7 @@
     //NSLog(@"new log %@",tempDataArray);
 
     // update data source, synchronize and reload results in prior views
-    [homeViewController.results replaceObjectAtIndex:self.resultsIndexPath.row withObject:tempDataArray];
+    [homeViewController.results replaceObjectAtIndex:self.resultsIndexPath.section withObject:tempDataArray];
     [homeViewController synchronizeResultsWithRowData:tempDataArray];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateHomeResults" object:nil];

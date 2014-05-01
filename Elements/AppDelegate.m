@@ -93,6 +93,9 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    // Check if push notifications are enabled
+    [self checkPushNotifications];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -130,6 +133,7 @@
 - (NSString *)formatPartTitle:(NSString *)part :(NSString *)rel :(NSString *)heci
 {
     NSString *TitlePart = part;
+    if ([TitlePart length] > 30) TitlePart = [NSString stringWithFormat:@"%@...",[TitlePart substringToIndex:29]];
     NSString *TitleRel = @"";
     NSString *TitleHeci = @"";
     
@@ -139,9 +143,9 @@
     }
     if (heci != nil && ! [heci isKindOfClass:[NSNull class]] && ! [heci isEqualToString:@""])
     {
-        TitleHeci = [NSString stringWithFormat: @"  %@",heci];
+        TitleHeci = [NSString stringWithFormat: @"%@",heci];
     }
-    NSString *titleString = [NSString stringWithFormat:@"%@%@%@",TitlePart, TitleRel, TitleHeci];
+    NSString *titleString = [NSString stringWithFormat:@"%@%@\n%@",TitlePart, TitleRel, TitleHeci];
     
     return titleString;
 }
@@ -229,6 +233,96 @@
     [[NSNotificationCenter defaultCenter] addObserver:observer selector:selector name:name object:object];
 }
 
+- (void)checkPushNotifications
+{
+    // Setup items for Push Notifications
+    // Let the device know we want to receive push notifications
+	//[[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+    // (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+    
+    UIRemoteNotificationType notificationTypes = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
+    
+    //NSLog(@"Notifications %u",notificationTypes);
+    if (notificationTypes == UIRemoteNotificationTypeNone)
+    {
+        // Setup storage for notification date check
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        
+        NSDate *savedNotificationCheckDate = [defaults objectForKey:@"notificationCheckDate"];
+        NSDate *currentDate = [NSDate date];
+        
+        NSLog(@"APNs are not enabled, saved notification date is: %@", savedNotificationCheckDate);
+        
+        // Check which date expires first, savedNotifcationCheckDate or current date and
+        // store the answer in earlierDate
+        NSDate *earlierDate = [currentDate earlierDate:savedNotificationCheckDate];
+        
+        // If earlierDate is savedNotificationCheckDate, display alert as two weeks have passed
+        if([earlierDate isEqualToDate:savedNotificationCheckDate])// || savedNotificationCheckDate == NULL)
+        {
+            UIAlertView *alertSuccessful = [[UIAlertView alloc] initWithTitle:@"Push Notifications" message:@"Please enable wālo notifications on your iPhone to receive updates on your waits and events" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [alertSuccessful show];
+            
+            // Save new notificationDate to check back in two weeks
+            NSDate *notificationDateTwoWeeks = [currentDate dateByAddingTimeInterval:60*60*24*14];
+            [defaults setObject:notificationDateTwoWeeks forKey:@"notificationCheckDate"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+        else if (savedNotificationCheckDate == NULL)
+        {
+            NSLog(@"Registering for APNs...");
+            // Setup items for Push Notifications
+            // Let the device know we want to receive push notifications
+            [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+             (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+        }
+    }
+    else
+    {
+        // Let the device know we want to receive push notifications
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+         (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+    }
+}
+
+- (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
+{
+    // create instance of singleton class
+    //self.singleton = [SingletonData getInstance];
+    
+    //NSLog(@"APNs Device Token before: %@", deviceToken);
+    
+    // Save Device Token without <> and spaces
+    NSString *token = [[[deviceToken description] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]] stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    // Store device token in user defaults
+    [defaults setValue:[NSString stringWithFormat:@"%@", token] forKey:@"userDeviceToken"];
+    
+    // Set device token for app session
+    //[self.singleton setDeviceToken:token];
+    
+    NSLog(@"APNs Device Token: %@", token);
+}
+
+- (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error
+{
+	//NSLog(@"Failed to get token, error: %@", error);
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    UIApplicationState state = [application applicationState];
+    if (state == UIApplicationStateActive) {
+        NSString *message = [[userInfo valueForKey:@"aps"] valueForKey:@"alert"];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"wālo alert" message:message delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        
+        [alertView show];
+    } else {
+        //Do stuff that you would do if the application was not active
+    }
+}
+
 
 #pragma mark - NSUrlConnectionDelegate Methods
 
@@ -245,7 +339,7 @@
 {
     NSMutableURLRequest *theRequest=[NSMutableURLRequest
                                      requestWithURL:[NSURL URLWithString:queryString]
-                                     cachePolicy:NSURLRequestUseProtocolCachePolicy
+                                     cachePolicy:NSURLRequestReloadIgnoringCacheData
                                      timeoutInterval:15.0];
 
     [appDelegate loadingViewWillAppear];

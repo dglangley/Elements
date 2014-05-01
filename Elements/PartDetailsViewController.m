@@ -36,7 +36,7 @@
     homeViewController = [self.navigationController.viewControllers objectAtIndex:0];
     
     // set the title using a cover label
-    self.title = [appDelegate formatPartTitle:[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"part"] :[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"rel"] :[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"heci"]];
+    self.title = [appDelegate formatPartTitle:[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"part"] :[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"rel"] :[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"heci"]];
     UILabel* tlabel = [[UILabel alloc] initWithFrame:CGRectMake(0,0, navBar.frame.size.width, navBar.frame.size.height)];
     tlabel.text = self.navigationItem.title;
     tlabel.adjustsFontSizeToFitWidth = YES;
@@ -54,7 +54,7 @@
     [appDelegate.dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     today = [[appDelegate.dateFormatter stringFromDate:[NSDate date]] substringToIndex:10];
     
-    NSString *partPrice = [[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"price"];
+    NSString *partPrice = [[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"price"];
     if (partPrice == nil || [partPrice isKindOfClass:[NSNull class]] || [partPrice isEqualToString:@""])
     {
         partPrice = @"";
@@ -63,7 +63,7 @@
     self.priceTextField.delegate = self;
     [self.priceTextField setInputAccessoryView:appDelegate.keyboardToolbar];
 
-    self.descrLabel.text = [appDelegate formatPartDescr:[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"system"] :[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"description"]];
+    self.descrLabel.text = [appDelegate formatPartDescr:[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"system"] :[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"description"]];
     self.descrLabel.numberOfLines = 0;
     
     self.categorySegmentedControl.selectedSegmentIndex = 2;
@@ -76,14 +76,14 @@
 {
     [super viewWillAppear:YES];
     
-    if ([[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"availability"] count] == 0)
+    if ([[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"availability"] count] == 0)
     {
-        if ([[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"sales"] count] > 0)
+        if ([[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"sales"] count] > 0)
         {
             self.categorySegmentedControl.selectedSegmentIndex = 1;
             [self simpleRefreshSection];
         }
-        else if ([[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"purchases"] count] > 0)
+        else if ([[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"purchases"] count] > 0)
         {
             self.categorySegmentedControl.selectedSegmentIndex = 3;
             [self simpleRefreshSection];
@@ -129,16 +129,16 @@
     switch (self.categorySegmentedControl.selectedSegmentIndex)
     {
         case 0:
-            return [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"demand"] count];
+            return [[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"demand"] count];
             break;
         case 1:
-            return [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"sales"] count];
+            return [[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"sales"] count];
             break;
         case 2:
-            return [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"availability"] count];
+            return [[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"availability"] count];
             break;
         case 3:
-            return [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"purchases"] count];
+            return [[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"purchases"] count];
             break;
     }
 
@@ -175,16 +175,16 @@
     switch (self.categorySegmentedControl.selectedSegmentIndex)
     {
         case 0:
-            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"demand"] objectAtIndex:indexPath.row];
+            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"demand"] objectAtIndex:indexPath.row];
             break;
         case 1:
-            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"sales"] objectAtIndex:indexPath.row];
+            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"sales"] objectAtIndex:indexPath.row];
             break;
         case 2:
-            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"availability"] objectAtIndex:indexPath.row];
+            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"availability"] objectAtIndex:indexPath.row];
             break;
         case 3:
-            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"purchases"] objectAtIndex:indexPath.row];
+            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"purchases"] objectAtIndex:indexPath.row];
             break;
     }
 
@@ -237,16 +237,16 @@
     switch (self.categorySegmentedControl.selectedSegmentIndex)
     {
         case 0:
-            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"demand"] objectAtIndex:indexPath.row];
+            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"demand"] objectAtIndex:indexPath.row];
             break;
         case 1:
-            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"sales"] objectAtIndex:indexPath.row];
+            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"sales"] objectAtIndex:indexPath.row];
             break;
         case 2:
-            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"availability"] objectAtIndex:indexPath.row];
+            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"availability"] objectAtIndex:indexPath.row];
             break;
         case 3:
-            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"purchases"] objectAtIndex:indexPath.row];
+            rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"purchases"] objectAtIndex:indexPath.row];
             break;
     }
     //NSLog(@"data %@",rowData);
@@ -319,7 +319,7 @@
     NSIndexPath *indexPath = [self.resultsTableView indexPathForRowAtPoint:p];
     if (indexPath == nil) return;//long pressed on table but not on row
     
-    NSDictionary *avail = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"availability"] objectAtIndex:indexPath.row];
+    NSDictionary *avail = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"availability"] objectAtIndex:indexPath.row];
     NSString *sourceUrl;
     //NSLog(@"company is %@",[[avail objectForKey:@"company"] substringToIndex:4]);
     if ([[[avail objectForKey:@"company"] substringToIndex:4] isEqualToString:@"eBay"])
@@ -366,17 +366,17 @@
     //HomeViewController *homeViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"HomeViewController"];
     
     if (textField != self.priceTextField
-        || [textField.text isEqualToString:[[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"price"]]) return;
+        || [textField.text isEqualToString:[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"price"]]) return;
     
-    [[homeViewController.results objectAtIndex:self.resultsIndexPath.row] setValue:textField.text forKey:@"price"];
+    [[homeViewController.results objectAtIndex:self.resultsIndexPath.section] setValue:textField.text forKey:@"price"];
     
-    NSMutableDictionary *tempDataArray = [[homeViewController.results objectAtIndex:self.resultsIndexPath.row] mutableCopy];
-    [homeViewController.results replaceObjectAtIndex:self.resultsIndexPath.row withObject:tempDataArray];
+    NSMutableDictionary *tempDataArray = [[homeViewController.results objectAtIndex:self.resultsIndexPath.section] mutableCopy];
+    [homeViewController.results replaceObjectAtIndex:self.resultsIndexPath.section withObject:tempDataArray];
     [homeViewController synchronizeResultsWithRowData:tempDataArray];
 
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateHomeResults" object:nil];
 
-    NSString *pId = [[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"partid"];
+    NSString *pId = [[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"partid"];
     NSString *price = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSString *queryString = [NSString stringWithFormat:@"%s/drop/save_part.php?partid=%@&price=%@",URL_ROOT, pId, price];
     NSLog(@"save url %@",queryString);
@@ -400,7 +400,7 @@
     // push to records controller
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     RecordsManagerViewController *recordsManagerViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecordsManagerViewController"];
-    NSString *pId = [[homeViewController.results objectAtIndex:self.resultsIndexPath.row] objectForKey:@"partid"];
+    NSString *pId = [[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"partid"];
     NSMutableArray *recordArray = [[NSMutableArray alloc] initWithObjects:@"", @"", @"", @"", @"", @"", @"", categoryId, pId, self.title, nil];
     recordsManagerViewController.resultsIndexPath = self.resultsIndexPath;
     recordsManagerViewController.recordArray = (NSArray *)recordArray;

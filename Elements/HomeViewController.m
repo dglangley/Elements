@@ -74,6 +74,16 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(simpleRefreshSection) name:@"updateHomeResults" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSearchBar:) name:@"updateSearchBar" object:nil];
 
+    self.resultsTableView.tableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.resultsTableView.bounds.size.width, 20.0f)];
+    
+    // disables the pan gesture which slides out side menu because it
+    // interferes with swipe gesture for editing cells
+    [self.revealController setRecognizesPanningOnFrontView:NO];
+    // enable swipe gesture on nav bar
+    [self.navigationController.navigationBar addGestureRecognizer:self.revealController.revealPanGestureRecognizer];
+    
+    //NSLog(@"badge %d",[UIApplication sharedApplication].applicationIconBadgeNumber);
+    //[[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -222,8 +232,12 @@
     // to make this more than one section, change the 0,1 to x,y
     // where x is the first section you want to change and y is
     // the number of sections proceeding from that initial section
-    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)];
-    [self.resultsTableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+    //NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)];
+
+    //changed to reloaddata when I changed from many-rows-to-one-section to
+    //one-row-to-many-sections
+    [self.resultsTableView reloadData];
+    //[self.resultsTableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 - (void)refreshView:(NSNotification *) notification
@@ -286,7 +300,7 @@
         [self.view addSubview:prevSearchLabel];
     }
     
-    NSDictionary *rowData = [self.results objectAtIndex:indexPath.row];
+    NSDictionary *rowData = [self.results objectAtIndex:indexPath.section];
     NSString *searchStr = [[rowData objectForKey:@"heci"] substringToIndex:7];
     if ([searchStr isEqualToString:@""] || searchStr == nil)
     {
@@ -350,28 +364,42 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    return 1;
+}
+
+- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
+{
     //NSLog(@"count %lu",(unsigned long)[self.results count]);
     return [self.results count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSString *cellId = @"resultCell";
+{    NSString *cellId = @"resultCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     
-    UILabel *qtyLabel = [[UILabel alloc] initWithFrame:CGRectMake(70,40,30,20)];
-    UILabel *topLabel = [[UILabel alloc] initWithFrame:CGRectMake(5,0,self.view.bounds.size.width-10,26)];
-    UILabel *bottomLabel = [[UILabel alloc] initWithFrame:CGRectMake(5,26,self.view.bounds.size.width-10,12)];
-    UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-80,46,50,10)];
+    UILabel *qtyLabel = [[UILabel alloc] initWithFrame:CGRectMake(85,85,30,20)];
+    UILabel *topLabel = [[UILabel alloc] initWithFrame:CGRectMake(90,3,self.view.bounds.size.width-95,30)];
+    UILabel *bottomLabel = [[UILabel alloc] initWithFrame:CGRectMake(90,35,self.view.bounds.size.width-150,24)];
+    UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-55,35,50,10)];
     UILabel *srcLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-170,40,95,20)];
+    UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 80, 80)];
     /*
     UISwitch *ignitorSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-50,15,40,10)];
      */
-    UILabel *companyLabel = [[UILabel alloc] initWithFrame:CGRectMake(100,40,160,20)];
-    UILabel *priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-70,100,65,14)];
-    UILabel *historyLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, 80, 160, 40)];
+    /*
+    UILabel *companyLabel = [[UILabel alloc] initWithFrame:CGRectMake(90,65,160,20)];
+     */
+    UILabel *priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(5,90,80,14)];
+    UILabel *marketFooter = [[UILabel alloc] initWithFrame:CGRectMake(0, 116, self.view.bounds.size.width, 36)];
+    CGFloat buttonWidth = 80;
+    CGFloat buttonHeight = marketFooter.frame.size.height;
+    UIButton *demandButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, buttonWidth, buttonHeight)];
+    UIButton *salesButton = [[UIButton alloc] initWithFrame:CGRectMake(buttonWidth, 0, buttonWidth, buttonHeight)];
+    UIButton *availButton = [[UIButton alloc] initWithFrame:CGRectMake(buttonWidth*2, 0, buttonWidth, buttonHeight)];
+    UIButton *purchButton = [[UIButton alloc] initWithFrame:CGRectMake(buttonWidth*3, 0, buttonWidth, buttonHeight)];
 
-    NSMutableDictionary *rowData = [self.results objectAtIndex:indexPath.row];
+    NSInteger rowNumber = indexPath.section;
+    NSMutableDictionary *rowData = [self.results objectAtIndex:rowNumber];
 
     // if this is single-search resulting data, attempt to update master results if it overlaps
     if (! [self.searchBar.text isEqualToString:@""])
@@ -392,6 +420,7 @@
         qtyLabel.font = [UIFont systemFontOfSize:16];
         qtyLabel.textColor = [UIColor colorWithRed:143.0/255.0 green:94.0/255.0 blue:23.0/255.0 alpha:1.0f];
         qtyLabel.adjustsFontSizeToFitWidth = YES;
+        qtyLabel.textAlignment = NSTextAlignmentLeft;
         qtyLabel.contentMode = UIViewContentModeScaleAspectFit;
         [cell.contentView addSubview:qtyLabel];
 
@@ -399,18 +428,19 @@
         topLabel.font = [UIFont systemFontOfSize:18];
         topLabel.numberOfLines = 0;
         topLabel.adjustsFontSizeToFitWidth = YES;
-        topLabel.textAlignment = NSTextAlignmentCenter;
+        topLabel.textAlignment = NSTextAlignmentLeft;
         topLabel.contentMode = UIViewContentModeScaleAspectFit;
-        topLabel.minimumScaleFactor = 0.5f;
+        topLabel.minimumScaleFactor = 0.75f;
         [cell.contentView addSubview:topLabel];
 
         bottomLabel.tag = 23;
         bottomLabel.font = [UIFont systemFontOfSize:10];
         bottomLabel.textColor = [UIColor grayColor];
-        bottomLabel.numberOfLines = 1;
+        bottomLabel.numberOfLines = 0;
         bottomLabel.adjustsFontSizeToFitWidth = YES;
-        bottomLabel.textAlignment = NSTextAlignmentCenter;
+        bottomLabel.textAlignment = NSTextAlignmentLeft;
         bottomLabel.contentMode = UIViewContentModeScaleAspectFit;
+        bottomLabel.minimumScaleFactor = 0.75f;
         [cell.contentView addSubview:bottomLabel];
 
         dateLabel.tag = 24;
@@ -439,6 +469,7 @@
         [cell.contentView addSubview:ignitorSwitch];
          */
         
+        /*
         companyLabel.tag = 27;
         companyLabel.font = [UIFont systemFontOfSize:12];
         companyLabel.textColor = [UIColor colorWithRed:143.0/255.0 green:94.0/255.0 blue:23.0/255.0 alpha:1.0f];
@@ -446,23 +477,60 @@
         //companyLabel.textAlignment = NSTextAlignmentRight;
         companyLabel.contentMode = UIViewContentModeScaleAspectFit;
         [cell.contentView addSubview:companyLabel];
+         */
         
         priceLabel.tag = 28;
         priceLabel.font = [UIFont systemFontOfSize:14];
         priceLabel.textColor = [UIColor blackColor];
         priceLabel.adjustsFontSizeToFitWidth = YES;
         priceLabel.contentMode = UIViewContentModeScaleAspectFit;
-        priceLabel.textAlignment = NSTextAlignmentRight;
+        priceLabel.textAlignment = NSTextAlignmentCenter;
         [cell.contentView addSubview:priceLabel];
         
-        historyLabel.tag = 29;
-        historyLabel.font = [UIFont systemFontOfSize:12];
-        historyLabel.textColor = [UIColor grayColor];
-        historyLabel.numberOfLines = 0;
-        historyLabel.adjustsFontSizeToFitWidth = YES;
-        //companyLabel.textAlignment = NSTextAlignmentRight;
-        historyLabel.contentMode = UIViewContentModeScaleAspectFit;
-        [cell.contentView addSubview:historyLabel];
+        cellImage.tag = 29;
+        [cell.contentView addSubview:cellImage];
+
+        marketFooter.tag = 30;
+        [marketFooter setBackgroundColor:[UIColor colorWithRed:240.0/255.0 green:240.0/255.0 blue:240.0/255.0 alpha:0.3]];
+        // build mask to cover border except for top edge
+        CGFloat borderWidth = 0.5;
+        [marketFooter.layer setBorderColor:[UIColor colorWithRed:220.0/255.0 green:220.0/255.0 blue:220.0/255.0 alpha:1.0].CGColor];
+        [marketFooter.layer setBorderWidth:borderWidth];
+        UIView* mask = [[UIView alloc] initWithFrame:CGRectMake(0, 0, marketFooter.frame.size.width, marketFooter.frame.size.height-borderWidth)];
+        mask.backgroundColor = [UIColor blackColor];
+        marketFooter.layer.mask = mask.layer;
+        
+        demandButton.tag = 31;
+        [demandButton.titleLabel setFont:[UIFont systemFontOfSize:10]];
+        [demandButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
+        [demandButton setBackgroundColor:[UIColor clearColor]];
+        [demandButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+        [marketFooter addSubview:demandButton];
+        
+        salesButton.tag = 32;
+        [salesButton.titleLabel setFont:[UIFont systemFontOfSize:10]];
+        [salesButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
+        [salesButton setBackgroundColor:[UIColor clearColor]];
+        [salesButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+        [marketFooter addSubview:salesButton];
+        
+        availButton.tag = 33;
+        [availButton.titleLabel setFont:[UIFont systemFontOfSize:10]];
+        [availButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
+        [availButton.titleLabel setAdjustsFontSizeToFitWidth:YES];
+        [availButton.titleLabel setNumberOfLines:0];
+        [availButton setBackgroundColor:[UIColor clearColor]];
+        [availButton setTitleColor:[UIColor colorWithRed:143.0/255.0 green:94.0/255.0 blue:23.0/255.0 alpha:1.0f] forState:UIControlStateNormal];
+        [marketFooter addSubview:availButton];
+        
+        purchButton.tag = 34;
+        [purchButton.titleLabel setFont:[UIFont systemFontOfSize:10]];
+        [purchButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
+        [purchButton setBackgroundColor:[UIColor clearColor]];
+        [purchButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+        [marketFooter addSubview:purchButton];
+
+        [cell.contentView addSubview:marketFooter];
     }
     else
     {
@@ -475,39 +543,40 @@
         ignitorSwitch = (UISwitch *)[cell.contentView viewWithTag:26];
         [ignitorSwitch setOn:igniteOn];
          */
+        /*
         companyLabel = (UILabel *)[cell.contentView viewWithTag:27];
+         */
         priceLabel = (UILabel *)[cell.contentView viewWithTag:28];
-        historyLabel = (UILabel *)[cell.contentView viewWithTag:29];
+        cellImage = (UIImageView *)[cell.contentView viewWithTag:29];
+        marketFooter = (UILabel *)[cell.contentView viewWithTag:30];
+        demandButton = (UIButton *)[cell.contentView viewWithTag:31];
+        salesButton = (UIButton *)[cell.contentView viewWithTag:32];
+        availButton = (UIButton *)[cell.contentView viewWithTag:33];
+        purchButton = (UIButton *)[cell.contentView viewWithTag:34];
     }
     
     //cell.imageView = nil;
     if (! [[rowData objectForKey:@"heci"] isEqualToString:@""])
     {
         NSURL *imgUrl = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.bell-enterprise.com/pictures/thumbs/%@.jpg",[[rowData objectForKey:@"heci"] substringToIndex:7]]];
+        [cellImage setImageWithURL:imgUrl placeholderImage:[UIImage imageNamed:@"no-picture.png"]];
+        /*
         [[cell.imageView layer] setMagnificationFilter:kCAFilterNearest];
         [cell.imageView setTransform:CGAffineTransformMakeScale(.55, .55)];
         [cell.imageView setImageWithURL:imgUrl placeholderImage:[UIImage imageNamed:@"no-picture.png"]];
+         */
     }
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-
-    NSString *qty = @"";
-    if ([rowData objectForKey:@"qty"] != nil
-        && ! [[rowData objectForKey:@"qty"] isKindOfClass:[NSNull class]]
-        && ! [[rowData objectForKey:@"qty"] isEqualToString:@""])
-    {
-        qty = [NSString stringWithFormat: @" %@",[rowData objectForKey:@"qty"]];
-    }
-    qtyLabel.text = qty;
 
     NSString *labelString = [appDelegate formatPartTitle:[rowData objectForKey:@"part"] :[rowData objectForKey:@"rel"] :[rowData objectForKey:@"heci"]];
     topLabel.text = labelString;
     if ([rowData objectForKey:@"rank"] && [[rowData objectForKey:@"rank"] isEqualToString:@"3"])
     {
-        topLabel.font = [UIFont boldSystemFontOfSize:14.0f];
+        topLabel.font = [UIFont boldSystemFontOfSize:16.0f];
     }
     else
     {
-        topLabel.font = [UIFont systemFontOfSize:14.0f];
+        topLabel.font = [UIFont systemFontOfSize:16.0f];
     }
     
     NSString *descr = [appDelegate formatPartDescr:[rowData objectForKey:@"system"] :[rowData objectForKey:@"description"]];
@@ -527,7 +596,7 @@
         
         dateTime = [appDelegate.dateFormatter dateFromString:[rowData objectForKey:@"datetime"]];
         // this is the date/time we're formatting to
-        [appDelegate.dateFormatter setDateFormat:@"MM/dd, h:mma"];
+        [appDelegate.dateFormatter setDateFormat:@"M/dd, h:mma"];
         date = [[appDelegate.dateFormatter stringFromDate:dateTime] lowercaseString];
         
         [appDelegate.dateFormatter setDateFormat:@"MM-dd"];
@@ -551,14 +620,30 @@
     }
     srcLabel.text = src;
     
-    NSString *companyName = @"";
+    NSString *availStr = @"Availability";
+    NSString *qty = @"";
+    if ([rowData objectForKey:@"qty"] != nil
+        && ! [[rowData objectForKey:@"qty"] isKindOfClass:[NSNull class]]
+        && ! [[rowData objectForKey:@"qty"] isEqualToString:@""])
+    {
+        qty = [NSString stringWithFormat: @"%@",[rowData objectForKey:@"qty"]];
+    }
     if ([rowData objectForKey:@"company"] != nil
         && ! [[rowData objectForKey:@"company"] isKindOfClass:[NSNull class]]
         && ! [[rowData objectForKey:@"company"] isEqualToString:@""])
     {
-        companyName = [rowData objectForKey:@"company"];
+        if ([qty isEqualToString:@""])
+        {
+            availStr = [NSString stringWithFormat:@"%@", [rowData objectForKey:@"company"]];
+        }
+        else
+        {
+            availStr = [NSString stringWithFormat:@"(%@)\n%@",qty, [rowData objectForKey:@"company"]];
+        }
+    } else if (! [qty isEqualToString:@""]) {
+        availStr = [NSString stringWithFormat:@"(%@)", qty];
     }
-    companyLabel.text = companyName;
+    [availButton setTitle:availStr forState:UIControlStateNormal];
     
     NSString *price = @"";
     if ([rowData objectForKey:@"price"] != nil
@@ -571,40 +656,44 @@
     
     NSArray *sales = [rowData objectForKey:@"sales"];
     NSArray *purch = [rowData objectForKey:@"purchases"];
-    NSString *historyStr;
-    if ([sales count] > 0 || [purch count] > 0)
+    NSString *salesStr = @"Sales";
+    NSString *purchStr = @"Purchases";
+    if ([sales count] > 0)
     {
         NSString *sPost = @"";
-        NSString *pPost = @"";
         if ([sales count] != 1) sPost = @"s";
-        if ([purch count] != 1) pPost = @"s";
-        
-        if ([sales count] > 0 && [purch count] > 0)
+        if ([sales count] > 0)
         {
-            historyStr = [NSString stringWithFormat:@"%d sale%@\n%d purchase%@", [sales count], sPost, [purch count], pPost];
-        }
-        else if ([sales count] > 0)
-        {
-            historyStr = [NSString stringWithFormat:@"%d sale%@", [sales count], sPost];
-        }
-        else
-        {
-            historyStr = [NSString stringWithFormat:@"%d purchase%@", [purch count], pPost];
+            salesStr = [NSString stringWithFormat:@"%lu Sale%@", (unsigned long)[sales count], sPost];
         }
     }
-    historyLabel.text = historyStr;
+    
+    if ([purch count] > 0)
+    {
+        NSString *pPost = @"";
+        if ([purch count] != 1) pPost = @"s";
+        
+        if ([purch count] > 0)
+        {
+            purchStr = [NSString stringWithFormat:@"%lu Purchase%@", (unsigned long)[purch count], pPost];
+        }
+    }
+    
+    [demandButton setTitle:@"Demand" forState:UIControlStateNormal];
+    [salesButton setTitle:salesStr forState:UIControlStateNormal];
+    [purchButton setTitle:purchStr forState:UIControlStateNormal];
     
     cell.userInteractionEnabled = YES;
-    
+
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 128.0f;
+    return 152.0f;
     
     // when there's no company to list, the cell height can be smaller
-    if ([[[self.results objectAtIndex:indexPath.row] objectForKey:@"company"] isEqualToString:@""])
+    if ([[[self.results objectAtIndex:indexPath.section] objectForKey:@"company"] isEqualToString:@""])
     {
         return 54.0f;
     }
@@ -625,13 +714,13 @@
     // push to details controller
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     PartDetailsViewController *partDetailsViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"PartDetailsViewController"];
-    NSMutableDictionary *partDict = [self.results objectAtIndex:indexPath.row];
+    NSMutableDictionary *partDict = [self.results objectAtIndex:indexPath.section];
     //NSLog(@"row %d: %@",indexPath.row, partDict);
     
     partDetailsViewController.resultsIndexPath = indexPath;
     // assign dictionary to next view controller
     //NSLog(@"prep dict %@",partDict);
-    [partDict setObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row] forKey:@"indexPathRow"];
+    [partDict setObject:[NSString stringWithFormat:@"%ld",(long)indexPath.section] forKey:@"indexPathRow"];
     partDetailsViewController.partDictionary = partDict;
     
     [self.navigationController pushViewController:partDetailsViewController animated:YES];
@@ -654,7 +743,7 @@
     // user is deleting item
     if (editingStyle == UITableViewCellEditingStyleDelete)
     {
-        NSString *pId = [[self.results objectAtIndex:indexPath.row] objectForKey:@"id"];
+        NSString *pId = [[self.results objectAtIndex:indexPath.section] objectForKey:@"id"];
         NSString *urlString = [NSString stringWithFormat:@"%s/drop/save_ignitors.php?partid=%@&save_to_on=0", URL_ROOT, pId];
         NSLog(@"ignitor url %@",urlString);
         [appDelegate goURL:urlString];
@@ -669,7 +758,7 @@
     NSIndexPath *indexPath = [self indexPathForCellContainingView:switchIsPressed];
     // look up the value of the item that is referenced by the switch - this
     // is from my datasource for the table view
-    NSString *pId = [[self.results objectAtIndex:indexPath.row] objectForKey:@"id"];
+    NSString *pId = [[self.results objectAtIndex:indexPath.section] objectForKey:@"id"];
     NSString *save_on = @"0";
     if ([sender isOn]) save_on = @"1";
     NSString *urlString = [NSString stringWithFormat:@"%s/drop/save_ignitors.php?partid=%@&save_to_on=%@", URL_ROOT, pId, save_on];
