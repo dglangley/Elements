@@ -81,9 +81,6 @@
     [self.revealController setRecognizesPanningOnFrontView:NO];
     // enable swipe gesture on nav bar
     [self.navigationController.navigationBar addGestureRecognizer:self.revealController.revealPanGestureRecognizer];
-    
-    //NSLog(@"badge %d",[UIApplication sharedApplication].applicationIconBadgeNumber);
-    //[[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -100,6 +97,11 @@
     lpgr.minimumPressDuration = 1.0; //seconds
     lpgr.delegate = self;
     [self.resultsTableView addGestureRecognizer:lpgr];
+    
+    //[appDelegate updateTabBarBadge];
+    
+    //NSLog(@"badge %d",[UIApplication sharedApplication].applicationIconBadgeNumber);
+    //[[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
 }
 
 - (void)scrollViewDidScroll :(UIScrollView *)scrollView
@@ -242,6 +244,8 @@
 
 - (void)refreshView:(NSNotification *) notification
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"connectionObserver" object:nil];
+
     if (forceLoadResults == YES)
     {
         if (! [appDelegate.jsonResults objectForKey:@"results"]) return;
@@ -257,6 +261,10 @@
             self.results = [appDelegate.jsonResults objectForKey:@"results"];
         }
         
+        NSLog(@"companies %@",[appDelegate.jsonResults objectForKey:@"companies"]);
+        [appDelegate.LOCAL_DB setObject:[appDelegate.jsonResults objectForKey:@"companies"] forKey:@"companies"];
+        [appDelegate.LOCAL_DB synchronize];
+        
         // changed 2-4-14 because the master list wasn't getting updated when I really wanted it to
         //if ([masterResults count] == 0 && [self.searchBar.text isEqualToString:@""]
         //    && self.resultsTypeSegmentedControl.selectedSegmentIndex == 0)
@@ -271,8 +279,6 @@
     
     if (! [self.searchBar.text isEqualToString:@""])
         [self.searchBar resignFirstResponder];//close keyboard and resign focus from search bar
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"connectionObserver" object:nil];
 }
 
 - (void)userDidLongPress:(UILongPressGestureRecognizer *)gestureRecognizer
@@ -373,6 +379,13 @@
     return [self.results count];
 }
 
+-(void)zoomImage:(UIGestureRecognizer *)tapGesture
+{
+    UIView *gestureView = (UIView *)tapGesture.view;
+    //NSLog(@"image frame %@",gestureView);
+    gestureView.frame = self.view.frame;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {    NSString *cellId = @"resultCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
@@ -381,8 +394,15 @@
     UILabel *topLabel = [[UILabel alloc] initWithFrame:CGRectMake(90,3,self.view.bounds.size.width-95,30)];
     UILabel *bottomLabel = [[UILabel alloc] initWithFrame:CGRectMake(90,35,self.view.bounds.size.width-150,24)];
     UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-55,35,50,10)];
-    UILabel *srcLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-170,40,95,20)];
+    //UILabel *srcLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-170,40,95,20)];
     UIImageView *cellImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 80, 80)];
+    // Detecting touches on imageview
+    UITapGestureRecognizer *imgTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                            action:@selector(zoomImage:)];
+    imgTapGesture.numberOfTapsRequired = 1;
+    //[cellImage setUserInteractionEnabled:YES];
+    //[cellImage addGestureRecognizer:imgTapGesture];
+
     /*
     UISwitch *ignitorSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-50,15,40,10)];
      */
@@ -451,6 +471,7 @@
         dateLabel.textAlignment = NSTextAlignmentRight;
         [cell.contentView addSubview:dateLabel];
 
+        /*
         srcLabel.tag = 25;
         srcLabel.font = [UIFont fontWithName:@"Arial-BoldMT" size:8];
         srcLabel.textColor = [UIColor grayColor];
@@ -458,6 +479,7 @@
         srcLabel.contentMode = UIViewContentModeScaleAspectFit;
         srcLabel.textAlignment = NSTextAlignmentRight;
         //[cell.contentView addSubview:srcLabel];
+         */
         
         /*
         ignitorSwitch.tag = 26;//ignitorId;
@@ -503,6 +525,7 @@
         demandButton.tag = 31;
         [demandButton.titleLabel setFont:[UIFont systemFontOfSize:10]];
         [demandButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
+        [demandButton.titleLabel setNumberOfLines:0];
         [demandButton setBackgroundColor:[UIColor clearColor]];
         [demandButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
         [marketFooter addSubview:demandButton];
@@ -510,6 +533,7 @@
         salesButton.tag = 32;
         [salesButton.titleLabel setFont:[UIFont systemFontOfSize:10]];
         [salesButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
+        [salesButton.titleLabel setNumberOfLines:0];
         [salesButton setBackgroundColor:[UIColor clearColor]];
         [salesButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
         [marketFooter addSubview:salesButton];
@@ -526,6 +550,7 @@
         purchButton.tag = 34;
         [purchButton.titleLabel setFont:[UIFont systemFontOfSize:10]];
         [purchButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
+        [purchButton.titleLabel setNumberOfLines:0];
         [purchButton setBackgroundColor:[UIColor clearColor]];
         [purchButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
         [marketFooter addSubview:purchButton];
@@ -538,7 +563,7 @@
         topLabel = (UILabel *)[cell.contentView viewWithTag:22];
         bottomLabel = (UILabel *)[cell.contentView viewWithTag:23];
         dateLabel = (UILabel *)[cell.contentView viewWithTag:24];
-        srcLabel = (UILabel *)[cell.contentView viewWithTag:25];
+        //srcLabel = (UILabel *)[cell.contentView viewWithTag:25];
         /*
         ignitorSwitch = (UISwitch *)[cell.contentView viewWithTag:26];
         [ignitorSwitch setOn:igniteOn];
@@ -579,7 +604,7 @@
         topLabel.font = [UIFont systemFontOfSize:16.0f];
     }
     
-    NSString *descr = [appDelegate formatPartDescr:[rowData objectForKey:@"system"] :[rowData objectForKey:@"description"]];
+    NSString *descr = [appDelegate formatPartDescr:[rowData objectForKey:@"sys"] :[rowData objectForKey:@"descr"]];
     bottomLabel.text = descr;
     
     NSString *date = @"";
@@ -611,6 +636,7 @@
     }
     dateLabel.text = date;
     
+    /*
     NSString *src = @"";
     if ([rowData objectForKey:@"source"] != nil
         && ! [[rowData objectForKey:@"source"] isKindOfClass:[NSNull class]]
@@ -619,7 +645,9 @@
         src = [rowData objectForKey:@"source"];
     }
     srcLabel.text = src;
+     */
     
+    NSArray *market = [rowData objectForKey:@"market"];
     NSString *availStr = @"Availability";
     NSString *qty = @"";
     if ([rowData objectForKey:@"qty"] != nil
@@ -628,17 +656,17 @@
     {
         qty = [NSString stringWithFormat: @"%@",[rowData objectForKey:@"qty"]];
     }
-    if ([rowData objectForKey:@"company"] != nil
-        && ! [[rowData objectForKey:@"company"] isKindOfClass:[NSNull class]]
-        && ! [[rowData objectForKey:@"company"] isEqualToString:@""])
+    
+    NSArray *avail = [market objectAtIndex:2];
+    if ([avail count] > 0)
     {
         if ([qty isEqualToString:@""])
         {
-            availStr = [NSString stringWithFormat:@"%@", [rowData objectForKey:@"company"]];
+            availStr = @"Availability";//[NSString stringWithFormat:@"%@", company];
         }
         else
         {
-            availStr = [NSString stringWithFormat:@"(%@)\n%@",qty, [rowData objectForKey:@"company"]];
+            availStr = [NSString stringWithFormat:@"(%@)\nAvailable",qty];
         }
     } else if (! [qty isEqualToString:@""]) {
         availStr = [NSString stringWithFormat:@"(%@)", qty];
@@ -654,8 +682,9 @@
     }
     priceLabel.text = price;
     
-    NSArray *sales = [rowData objectForKey:@"sales"];
-    NSArray *purch = [rowData objectForKey:@"purchases"];
+    NSArray *sales = [market objectAtIndex:1];
+    NSArray *purch = [market objectAtIndex:3];
+    //NSLog(@"purch %@",purch);
     NSString *salesStr = @"Sales";
     NSString *purchStr = @"Purchases";
     if ([sales count] > 0)
@@ -664,7 +693,7 @@
         if ([sales count] != 1) sPost = @"s";
         if ([sales count] > 0)
         {
-            salesStr = [NSString stringWithFormat:@"%lu Sale%@", (unsigned long)[sales count], sPost];
+            salesStr = [NSString stringWithFormat:@"(%lu)\nSale%@", (unsigned long)[sales count], sPost];
         }
     }
     
@@ -675,7 +704,7 @@
         
         if ([purch count] > 0)
         {
-            purchStr = [NSString stringWithFormat:@"%lu Purchase%@", (unsigned long)[purch count], pPost];
+            purchStr = [NSString stringWithFormat:@"(%lu)\nPurchase%@", (unsigned long)[purch count], pPost];
         }
     }
     
@@ -691,14 +720,6 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 152.0f;
-    
-    // when there's no company to list, the cell height can be smaller
-    if ([[[self.results objectAtIndex:indexPath.section] objectForKey:@"company"] isEqualToString:@""])
-    {
-        return 54.0f;
-    }
-     
-    return 72.0f;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -709,7 +730,7 @@
     if (userLongPressDetected == YES) return;
 
     // get partid and send it in url to get all results based on that partid
-    //NSString *partId = [[self.results objectAtIndex:indexPath.row] objectForKey:@"id"];
+    //NSString *partId = [[self.results objectAtIndex:indexPath.row] objectForKey:@"pid"];
     
     // push to details controller
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -743,7 +764,7 @@
     // user is deleting item
     if (editingStyle == UITableViewCellEditingStyleDelete)
     {
-        NSString *pId = [[self.results objectAtIndex:indexPath.section] objectForKey:@"id"];
+        NSString *pId = [[self.results objectAtIndex:indexPath.section] objectForKey:@"pid"];
         NSString *urlString = [NSString stringWithFormat:@"%s/drop/save_ignitors.php?partid=%@&save_to_on=0", URL_ROOT, pId];
         NSLog(@"ignitor url %@",urlString);
         [appDelegate goURL:urlString];
@@ -758,7 +779,7 @@
     NSIndexPath *indexPath = [self indexPathForCellContainingView:switchIsPressed];
     // look up the value of the item that is referenced by the switch - this
     // is from my datasource for the table view
-    NSString *pId = [[self.results objectAtIndex:indexPath.section] objectForKey:@"id"];
+    NSString *pId = [[self.results objectAtIndex:indexPath.section] objectForKey:@"pid"];
     NSString *save_on = @"0";
     if ([sender isOn]) save_on = @"1";
     NSString *urlString = [NSString stringWithFormat:@"%s/drop/save_ignitors.php?partid=%@&save_to_on=%@", URL_ROOT, pId, save_on];
@@ -784,9 +805,9 @@
     NSMutableArray *tempMasterList = [[NSMutableArray alloc] initWithArray:masterResults];
     for (NSMutableDictionary *dict in tempMasterList)
     {
-        NSString *pId = [dict objectForKey:@"id"];
-        //NSLog(@"id %@ to id %@",pId, [rowData objectForKey:@"id"]);
-        if ([pId isEqualToString:[rowData objectForKey:@"id"]])
+        NSString *pId = [dict objectForKey:@"pid"];
+        //NSLog(@"id %@ to id %@",pId, [rowData objectForKey:@"pid"]);
+        if ([pId isEqualToString:[rowData objectForKey:@"pid"]])
         {
             [masterResults replaceObjectAtIndex:i withObject:rowData];
         }

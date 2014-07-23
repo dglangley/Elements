@@ -18,9 +18,12 @@
     NSArray *salesArray;
     NSArray *purchArray;
     NSArray *availArray;
+    NSArray *marketArray;
     NSString *today;
     HomeViewController *homeViewController;
     BOOL userLongPressDetected;
+    NSMutableArray *datesArray;
+    NSMutableDictionary *datedRows;
 }
 
 @property (strong, nonatomic) IBOutlet UITextField *qtyTextField;

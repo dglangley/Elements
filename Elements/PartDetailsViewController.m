@@ -63,10 +63,18 @@
     self.priceTextField.delegate = self;
     [self.priceTextField setInputAccessoryView:appDelegate.keyboardToolbar];
 
-    self.descrLabel.text = [appDelegate formatPartDescr:[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"system"] :[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"description"]];
+    self.descrLabel.text = [appDelegate formatPartDescr:[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"sys"] :[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"descr"]];
     self.descrLabel.numberOfLines = 0;
     
     self.categorySegmentedControl.selectedSegmentIndex = 2;
+    
+    // mark part as 'read' for discovery db
+    NSString *queryString = [NSString stringWithFormat:@"%s/drop/read_part.php?partid=%@",URL_ROOT, [[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"pid"]];
+    NSLog(@"read url %@",queryString);
+    [appDelegate goURL:queryString];
+    
+    [appDelegate addUniqueObserver:self selector:@selector(didMarkPartAsRead) name:@"connectionObserver" object:nil];
+    
     
     // set observer for updates from the next view so our data source can be updated automatically
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(simpleRefreshSection) name:@"updateDetailsResults" object:nil];
@@ -76,23 +84,28 @@
 {
     [super viewWillAppear:YES];
     
-    if ([[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"availability"] count] == 0)
+    marketArray = [[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"market"];
+    if ([[marketArray objectAtIndex:2] count] == 0)//avail
     {
-        if ([[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"sales"] count] > 0)
+        if ([[marketArray objectAtIndex:1] count] > 0)
         {
-            self.categorySegmentedControl.selectedSegmentIndex = 1;
+            self.categorySegmentedControl.selectedSegmentIndex = 1;//sales
             [self simpleRefreshSection];
         }
-        else if ([[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"purchases"] count] > 0)
+        else if ([[marketArray objectAtIndex:3] count] > 0)
         {
-            self.categorySegmentedControl.selectedSegmentIndex = 3;
+            self.categorySegmentedControl.selectedSegmentIndex = 3;//purch
             [self simpleRefreshSection];
         }
         else
         {
-            self.categorySegmentedControl.selectedSegmentIndex = 0;
+            self.categorySegmentedControl.selectedSegmentIndex = 0;//demand
             [self simpleRefreshSection];
         }
+    }
+    else
+    {
+        [self simpleRefreshSection];
     }
 }
 
@@ -124,8 +137,40 @@
 }
 */
 
+- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
+{
+    if ([datesArray count] > 0) return ([datesArray count]);
+    return 1;
+}
+
+- (NSString *) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    [appDelegate.dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    //[appDelegate.dateFormatter stringFromDate:[NSDate date]
+    //NSLog(@"date %@",[NSString stringWithFormat:@"%@",[datesArray objectAtIndex:section]]);
+    //NSLog(@"dates %@ = %d",datesArray, [[datedRows objectForKey:[datesArray objectAtIndex:section]] count]);
+
+    NSString *titleStr = @"";
+    if ([datesArray count] > 0)
+    {
+        NSDate *titleDate = [appDelegate.dateFormatter dateFromString:[NSString stringWithFormat:@"%@",[datesArray objectAtIndex:section]]];
+        [appDelegate.dateFormatter setDateFormat:@"cccc, MMMM d"];
+        titleStr = [appDelegate.dateFormatter stringFromDate:titleDate];
+    }
+
+    return (titleStr);
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    //NSLog(@"dates %@",datedRows);
+    if ([datesArray count] == 0) return 0;
+    
+    if ([datesArray objectAtIndex:section] == nil || [datedRows objectForKey:[datesArray objectAtIndex:section]] == nil) return 0;
+
+    return ([[datedRows objectForKey:[datesArray objectAtIndex:section]] count]);
+    //return [[marketArray objectAtIndex:self.categorySegmentedControl.selectedSegmentIndex] count];
+    /*
     switch (self.categorySegmentedControl.selectedSegmentIndex)
     {
         case 0:
@@ -143,12 +188,11 @@
     }
 
     return 0;
+     */
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    //NSLog(@"s %d",self.categorySegmentedControl.selectedSegmentIndex);
-    
     NSString *cellId = @"resultsCell";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];// forIndexPath:indexPath];
@@ -170,8 +214,13 @@
         [cell addSubview:cellDate];
         [cell addSubview:cellDescr];
     }
-    NSDictionary *rowData;
+    NSInteger rowNum = [[[datedRows objectForKey:[datesArray objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row] integerValue];
+    //NSLog(@"%ld: %@ to %ld = %@",(long)indexPath.row, [datesArray objectAtIndex:indexPath.section], (long)rowNum, [[datedRows objectForKey:[datesArray objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row]);
+    NSDictionary *rowData = [[marketArray objectAtIndex:self.categorySegmentedControl.selectedSegmentIndex] objectAtIndex:rowNum];
     
+    //NSLog(@"s %@",rowData);
+
+    /*
     switch (self.categorySegmentedControl.selectedSegmentIndex)
     {
         case 0:
@@ -187,20 +236,22 @@
             rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"purchases"] objectAtIndex:indexPath.row];
             break;
     }
+     */
 
     //NSLog(@"data %d %@ %@",indexPath.row, rowData);
-    cellQty.text = [rowData objectForKey:@"qty"];
+    cellQty.text = [rowData objectForKey:@"q"];
     //cellCompany.frame = CGRectMake(0, 0, 205, 21);
-    cellCompany.text = [rowData objectForKey:@"company"];
+    //NSLog(@"cid %@",[rowData objectForKey:@"cid"]);
+    cellCompany.text = [appDelegate getCompany:[rowData objectForKey:@"cid"]];
     cellRef.text = @"";
     if ([rowData objectForKey:@"order_number"] != nil) cellRef.text = [rowData objectForKey:@"order_number"];
     cellPrice.text = @"";
-    if ([rowData objectForKey:@"price"] != nil) cellPrice.text = [rowData objectForKey:@"price"];
+    if ([rowData objectForKey:@"p"] != nil) cellPrice.text = [rowData objectForKey:@"p"];
     cellDate.text = [rowData objectForKey:@"fdate"];
-    cellDescr.text = [rowData objectForKey:@"description"];
+    cellDescr.text = [rowData objectForKey:@"descr"];
     
     // change alpha for cell of previous dates
-    NSString *itemDate = [[NSString stringWithFormat:@"%@",[rowData objectForKey:@"datetime"]] substringToIndex:10];
+    NSString *itemDate = [[NSString stringWithFormat:@"%@",[rowData objectForKey:@"dt"]] substringToIndex:10];
     //NSLog(@"dates %@ %@",itemDate, today);
     
     float cellAlpha = 1.0f;
@@ -232,6 +283,7 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
+    /*
     NSDictionary *rowData;
 
     switch (self.categorySegmentedControl.selectedSegmentIndex)
@@ -249,21 +301,23 @@
             rowData = [[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"purchases"] objectAtIndex:indexPath.row];
             break;
     }
+     */
+    NSDictionary *rowData = [[marketArray objectAtIndex:self.categorySegmentedControl.selectedSegmentIndex] objectAtIndex:indexPath.row];
     //NSLog(@"data %@",rowData);
     
     // send data to next view controller
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     RecordsManagerViewController *recordsManagerViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecordsManagerViewController"];
     
-    NSString *company = [rowData objectForKey:@"company"];
+    NSString *company = [appDelegate getCompany:[rowData objectForKey:@"cid"]];
     if (company == nil) company = @"";
-    NSString *qty = [rowData objectForKey:@"qty"];
+    NSString *qty = [rowData objectForKey:@"q"];
     if (qty == nil) qty = @"";
     NSString *ref1 = [rowData objectForKey:@"ref1"];
     if (ref1 == nil) ref1 = @"";
-    NSString *price = [rowData objectForKey:@"price"];
+    NSString *price = [rowData objectForKey:@"p"];
     if (price == nil) price = @"";
-    NSString *datetime = [rowData objectForKey:@"datetime"];
+    NSString *datetime = [rowData objectForKey:@"dt"];
     if (datetime == nil) datetime = @"";
     
     NSString *recordId = [rowData objectForKey:@"id"];
@@ -272,13 +326,14 @@
     if (categoryId == nil) categoryId = @"";
     NSString *orderNumber = [rowData objectForKey:@"order_number"];
     if (orderNumber == nil) orderNumber = @"";
-    NSString *partId = [rowData objectForKey:@"partid"];
+    NSString *partId = [rowData objectForKey:@"pid"];
     if (partId == nil) partId = @"";
-    NSString *descr = [rowData objectForKey:@"description"];
+    NSString *descr = [rowData objectForKey:@"descr"];
     if (descr == nil) descr = @"";
     
     NSMutableArray *recordArray = [[NSMutableArray alloc] initWithObjects:company,orderNumber,qty,price,datetime,ref1, recordId,categoryId,partId,descr, nil];
     //NSLog(@"record %@",recordArray);
+    
     recordsManagerViewController.recordArray = (NSArray *)recordArray;
     recordsManagerViewController.resultsIndexPath = self.resultsIndexPath;
     //recordsManagerViewController.recordCategoryId = self.categorySegmentedControl.selectedSegmentIndex;
@@ -324,9 +379,9 @@
     //NSLog(@"company is %@",[[avail objectForKey:@"company"] substringToIndex:4]);
     if ([[[avail objectForKey:@"company"] substringToIndex:4] isEqualToString:@"eBay"])
     {
-        sourceUrl = [NSString stringWithFormat:@"ebay://launch?itm=%@",[avail objectForKey:@"source"]];
+        sourceUrl = [NSString stringWithFormat:@"ebay://launch?itm=%@",[avail objectForKey:@"src"]];
     }
-    else if ([[avail objectForKey:@"source"] isEqualToString:@"TE"])
+    else if ([[avail objectForKey:@"src"] isEqualToString:@"TE"])
     {
         UILabel *descrLabel = (UILabel *)[[self.resultsTableView cellForRowAtIndexPath:indexPath].contentView viewWithTag:6];
         NSString *descr = [descrLabel.text stringByReplacingOccurrencesOfString:@"  " withString:@" "];
@@ -348,11 +403,58 @@
 
 - (void)simpleRefreshSection
 {
+    [self initDataSources];
+    
+    [self.resultsTableView reloadData];
+    return;
+
     // to make this more than one section, change the 0,1 to x,y
     // where x is the first section you want to change and y is
     // the number of sections proceeding from that initial section
     NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)];
     [self.resultsTableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
+
+- (void)initDataSources
+{
+    NSSortDescriptor *sorter = [[NSSortDescriptor alloc] initWithKey:@"dt" ascending:NO];
+    NSArray *sortDescriptors = [NSArray arrayWithObject: sorter];
+    [[marketArray objectAtIndex:self.categorySegmentedControl.selectedSegmentIndex] sortUsingDescriptors:sortDescriptors];
+    
+    [datesArray removeAllObjects];
+    [datedRows removeAllObjects];
+    datesArray = [[NSMutableArray alloc] init];//reset every time
+    datedRows = [[NSMutableDictionary alloc] init];//reset every time
+    NSDictionary *eachRow;
+    NSString *eachDate;
+    for (int i = 0; i < [[marketArray objectAtIndex:self.categorySegmentedControl.selectedSegmentIndex] count]; i++)
+    {
+        eachRow = [[marketArray objectAtIndex:self.categorySegmentedControl.selectedSegmentIndex] objectAtIndex:i];
+        eachDate = [[eachRow objectForKey:@"dt"] substringToIndex:10];
+        if ([datesArray count] == 0 || ([datesArray count] > 0 && ! [eachDate isEqualToString:[datesArray objectAtIndex:[datesArray count]-1]]))
+        {
+            [datesArray addObject:eachDate];
+            [datedRows setObject:[[NSMutableArray alloc] initWithObjects:[NSString stringWithFormat:@"%d",i], nil] forKey:eachDate];
+        }
+        else
+        {
+            [[datedRows objectForKey:eachDate] setObject:[NSString stringWithFormat:@"%d",i] atIndex:[[datedRows objectForKey:eachDate] count]];
+        }
+    }
+}
+
+
+- (void)didMarkPartAsRead
+{
+    if ([appDelegate.jsonResults objectForKey:@"code"] || [appDelegate.jsonResults objectForKey:@"code"]>0) return;
+    
+    if ([[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"rank"]
+        && [[[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"rank"] isEqualToString:@"3"])
+    {
+        [[homeViewController.results objectAtIndex:self.resultsIndexPath.section] setValue:@"2" forKey:@"rank"];
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[UIApplication sharedApplication].applicationIconBadgeNumber-1];
+    }
 }
 
 - (IBAction)didChangeSegmentedControl:(id)sender
@@ -376,7 +478,7 @@
 
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateHomeResults" object:nil];
 
-    NSString *pId = [[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"partid"];
+    NSString *pId = [[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"pid"];
     NSString *price = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSString *queryString = [NSString stringWithFormat:@"%s/drop/save_part.php?partid=%@&price=%@",URL_ROOT, pId, price];
     NSLog(@"save url %@",queryString);
@@ -400,7 +502,7 @@
     // push to records controller
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     RecordsManagerViewController *recordsManagerViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecordsManagerViewController"];
-    NSString *pId = [[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"partid"];
+    NSString *pId = [[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"pid"];
     NSMutableArray *recordArray = [[NSMutableArray alloc] initWithObjects:@"", @"", @"", @"", @"", @"", @"", categoryId, pId, self.title, nil];
     recordsManagerViewController.resultsIndexPath = self.resultsIndexPath;
     recordsManagerViewController.recordArray = (NSArray *)recordArray;

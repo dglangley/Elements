@@ -43,6 +43,12 @@
 		CF52A05818F47B3600B8ECA4 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = CF52A04A18F47B3600B8ECA4 /* UIImageView+WebCache.m */; };
 		CFC6E988187A7BA3001DE63E /* RecordsManagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CFC6E987187A7BA3001DE63E /* RecordsManagerViewController.m */; };
 		CFDC712F1879D9900067DAEE /* PartDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CFDC712E1879D9900067DAEE /* PartDetailsViewController.m */; };
+		CFED9B1B198034A600F20568 /* te.png in Resources */ = {isa = PBXBuildFile; fileRef = CFED9B1A198034A600F20568 /* te.png */; };
+		CFED9B1E198038FA00F20568 /* ps.png in Resources */ = {isa = PBXBuildFile; fileRef = CFED9B1D198038FA00F20568 /* ps.png */; };
+		CFED9B20198039D600F20568 /* bb.png in Resources */ = {isa = PBXBuildFile; fileRef = CFED9B1F198039D600F20568 /* bb.png */; };
+		CFED9B2219803B8100F20568 /* locked.png in Resources */ = {isa = PBXBuildFile; fileRef = CFED9B2119803B8100F20568 /* locked.png */; };
+		CFED9B241980511500F20568 /* checked_user.png in Resources */ = {isa = PBXBuildFile; fileRef = CFED9B231980511500F20568 /* checked_user.png */; };
+		CFED9B271980594100F20568 /* AccountsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CFED9B261980594100F20568 /* AccountsViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -126,6 +132,13 @@
 		CFC6E987187A7BA3001DE63E /* RecordsManagerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordsManagerViewController.m; sourceTree = "<group>"; };
 		CFDC712D1879D9900067DAEE /* PartDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PartDetailsViewController.h; sourceTree = "<group>"; };
 		CFDC712E1879D9900067DAEE /* PartDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PartDetailsViewController.m; sourceTree = "<group>"; };
+		CFED9B1A198034A600F20568 /* te.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = te.png; sourceTree = "<group>"; };
+		CFED9B1D198038FA00F20568 /* ps.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ps.png; sourceTree = "<group>"; };
+		CFED9B1F198039D600F20568 /* bb.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bb.png; sourceTree = "<group>"; };
+		CFED9B2119803B8100F20568 /* locked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = locked.png; sourceTree = "<group>"; };
+		CFED9B231980511500F20568 /* checked_user.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checked_user.png; sourceTree = "<group>"; };
+		CFED9B251980594100F20568 /* AccountsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountsViewController.h; sourceTree = "<group>"; };
+		CFED9B261980594100F20568 /* AccountsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountsViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -207,6 +220,8 @@
 				CF465F2A186C15080033277E /* HomeViewController.m */,
 				CF465F2C186C15080033277E /* SettingsViewController.h */,
 				CF465F2D186C15080033277E /* SettingsViewController.m */,
+				CFED9B251980594100F20568 /* AccountsViewController.h */,
+				CFED9B261980594100F20568 /* AccountsViewController.m */,
 				CFDC712D1879D9900067DAEE /* PartDetailsViewController.h */,
 				CFDC712E1879D9900067DAEE /* PartDetailsViewController.m */,
 				CFC6E986187A7BA3001DE63E /* RecordsManagerViewController.h */,
@@ -254,6 +269,11 @@
 		CF52A02918F479A700B8ECA4 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				CFED9B231980511500F20568 /* checked_user.png */,
+				CFED9B2119803B8100F20568 /* locked.png */,
+				CFED9B1F198039D600F20568 /* bb.png */,
+				CFED9B1D198038FA00F20568 /* ps.png */,
+				CFED9B1A198034A600F20568 /* te.png */,
 				CF52A02A18F479B100B8ECA4 /* no-picture.png */,
 			);
 			name = Images;
@@ -392,10 +412,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CFED9B1B198034A600F20568 /* te.png in Resources */,
+				CFED9B241980511500F20568 /* checked_user.png in Resources */,
 				CF465F30186C15080033277E /* Images.xcassets in Resources */,
 				CF465F1F186C15080033277E /* InfoPlist.strings in Resources */,
 				CF465F28186C15080033277E /* Main.storyboard in Resources */,
+				CFED9B1E198038FA00F20568 /* ps.png in Resources */,
+				CFED9B20198039D600F20568 /* bb.png in Resources */,
 				CF52A02B18F479B100B8ECA4 /* no-picture.png in Resources */,
+				CFED9B2219803B8100F20568 /* locked.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -418,6 +443,7 @@
 				CF52A04F18F47B3600B8ECA4 /* SDWebImageDecoder.m in Sources */,
 				CF52A05218F47B3600B8ECA4 /* SDWebImageManager.m in Sources */,
 				CF52A04C18F47B3600B8ECA4 /* NSData+ImageContentType.m in Sources */,
+				CFED9B271980594100F20568 /* AccountsViewController.m in Sources */,
 				CF52A04E18F47B3600B8ECA4 /* SDWebImageCompat.m in Sources */,
 				CF52A05718F47B3600B8ECA4 /* UIImage+WebP.m in Sources */,
 				CF465F21186C15080033277E /* main.m in Sources */,
@@ -560,13 +586,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: David Langley (P3DV7SC9GB)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Elements/Elements-Prefix.pch";
 				INFOPLIST_FILE = "Elements/Elements-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Elements;
+				PROVISIONING_PROFILE = "C5C8A3CD-FB1C-4EE4-A073-B929B3BC1BAB";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -576,13 +603,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: David Langley (P3DV7SC9GB)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Elements/Elements-Prefix.pch";
 				INFOPLIST_FILE = "Elements/Elements-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Elements;
+				PROVISIONING_PROFILE = "C5C8A3CD-FB1C-4EE4-A073-B929B3BC1BAB";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

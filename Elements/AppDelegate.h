@@ -12,8 +12,7 @@
 
 #define appDelegate ((AppDelegate*)[[UIApplication sharedApplication] delegate])
 
-#define URL_ROOT "http://dev.thewaitlessapp.com"
-//#define URL_ROOT "http://david.local"
+#define URL_ROOT "http://david.local"//beta.thewaitlessapp.com"//
 
 @class LeftViewController;
 @class HomeViewController;
@@ -35,6 +34,10 @@
 @property (nonatomic, strong, readwrite) PKRevealController *revealController;
 @property (strong, nonatomic) LeftViewController* leftViewController;
 @property (strong, nonatomic) HomeViewController *HomeVC;
+@property (strong, nonatomic) NSUserDefaults *LOCAL_DB;
+@property (strong, nonatomic) NSDictionary *remoteDescrs;
+@property (strong, nonatomic) NSArray *remoteKeys;
+
 
 //for singleton class
 //@property (strong, nonatomic) SingletonData *singleton;
@@ -48,5 +51,7 @@
 - (void)completeAlertView;
 - (void)addUniqueObserver:(id)observer selector:(SEL)selector name:(NSString *)name object:(id)object;
 - (NSString *)stringByEncodingAmpersands:(NSString *)stringToEncode;
+- (void)updateTabBarBadge;
+- (NSString *)getCompany:(NSString *)cid;
 
 @end

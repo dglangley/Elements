@@ -11,10 +11,7 @@
 
 @interface SettingsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 {
-    NSArray *brokerSites;
     NSMutableArray *remotes;
-    NSArray *remoteNames;
-    NSDictionary *remoteDescrs;
 }
 @property (strong, nonatomic) IBOutlet UITableView *settingsTableView;
 

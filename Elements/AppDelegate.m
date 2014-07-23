@@ -31,6 +31,13 @@
     {
     }
     
+    self.LOCAL_DB = [NSUserDefaults standardUserDefaults];  //load NSUserDefaults
+    if (! [self.LOCAL_DB objectForKey:@"companies"])
+    {
+        [self.LOCAL_DB setObject:[[NSMutableDictionary alloc] init] forKey:@"companies"];
+        [self.LOCAL_DB synchronize];
+    }
+    
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [self.dateFormatter setTimeZone:[NSTimeZone localTimeZone]];//systemTimeZone?
     [self.dateFormatter setLocale:[NSLocale currentLocale]];
@@ -60,6 +67,9 @@
     [self.revealController setRecognizesPanningOnFrontView:YES];
     // enable swipe gesture on nav bar
     [self.navViewController.navigationBar addGestureRecognizer:self.revealController.revealPanGestureRecognizer];
+    
+    self.remoteDescrs = [[NSDictionary alloc] initWithObjectsAndKeys:@"Tel-Explorer",@"te",@"PowerSource",@"ps",@"BrokerBin",@"bb",@"FirstPoint",@"fp",@"E&M",@"em",@"North Georgia",@"ngt", nil];
+    self.remoteKeys = [[NSArray alloc] initWithObjects:@"te",@"ps",@"bb",@"fp",@"em",@"ngt", nil];
     
     return YES;
 }
@@ -96,6 +106,8 @@
     
     // Check if push notifications are enabled
     [self checkPushNotifications];
+    
+    [self updateTabBarBadge];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -111,8 +123,8 @@
     [self.tabBarViewController.view addSubview:self.activityIndicatorView];
     [self.activityIndicatorView startAnimating];
     
-    self.tabBarViewController.view.userInteractionEnabled = NO;
-    self.navViewController.view.userInteractionEnabled = NO;
+    //self.tabBarViewController.view.userInteractionEnabled = NO;
+    //self.navViewController.view.userInteractionEnabled = NO;
     return;
     
     // Show Loading View
@@ -246,9 +258,9 @@
     if (notificationTypes == UIRemoteNotificationTypeNone)
     {
         // Setup storage for notification date check
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        //NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         
-        NSDate *savedNotificationCheckDate = [defaults objectForKey:@"notificationCheckDate"];
+        NSDate *savedNotificationCheckDate = [self.LOCAL_DB objectForKey:@"notificationCheckDate"];
         NSDate *currentDate = [NSDate date];
         
         NSLog(@"APNs are not enabled, saved notification date is: %@", savedNotificationCheckDate);
@@ -260,13 +272,13 @@
         // If earlierDate is savedNotificationCheckDate, display alert as two weeks have passed
         if([earlierDate isEqualToDate:savedNotificationCheckDate])// || savedNotificationCheckDate == NULL)
         {
-            UIAlertView *alertSuccessful = [[UIAlertView alloc] initWithTitle:@"Push Notifications" message:@"Please enable wālo notifications on your iPhone to receive updates on your waits and events" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            UIAlertView *alertSuccessful = [[UIAlertView alloc] initWithTitle:@"Push Notifications" message:@"Please enable Elements notifications on your iPhone to receive important updates" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
             [alertSuccessful show];
             
             // Save new notificationDate to check back in two weeks
             NSDate *notificationDateTwoWeeks = [currentDate dateByAddingTimeInterval:60*60*24*14];
-            [defaults setObject:notificationDateTwoWeeks forKey:@"notificationCheckDate"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
+            [self.LOCAL_DB setObject:notificationDateTwoWeeks forKey:@"notificationCheckDate"];
+            [self.LOCAL_DB synchronize];
         }
         else if (savedNotificationCheckDate == NULL)
         {
@@ -295,10 +307,10 @@
     // Save Device Token without <> and spaces
     NSString *token = [[[deviceToken description] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]] stringByReplacingOccurrencesOfString:@" " withString:@""];
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    //NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     // Store device token in user defaults
-    [defaults setValue:[NSString stringWithFormat:@"%@", token] forKey:@"userDeviceToken"];
+    [self.LOCAL_DB setObject:[NSString stringWithFormat:@"%@", token] forKey:@"userDeviceToken"];
     
     // Set device token for app session
     //[self.singleton setDeviceToken:token];
@@ -308,18 +320,36 @@
 
 - (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error
 {
-	//NSLog(@"Failed to get token, error: %@", error);
+	NSLog(@"Failed to get token, error: %@", error);
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    [self updateTabBarBadge];
+
     UIApplicationState state = [application applicationState];
     if (state == UIApplicationStateActive) {
         NSString *message = [[userInfo valueForKey:@"aps"] valueForKey:@"alert"];
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"wālo alert" message:message delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Elements" message:message delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
         
         [alertView show];
     } else {
         //Do stuff that you would do if the application was not active
+    }
+}
+
+- (void)updateTabBarBadge
+{
+    //NSLog(@"badges: %ld...", (long)[UIApplication sharedApplication].applicationIconBadgeNumber);
+    UITabBarItem *tbi = (UITabBarItem*) [[[self.tabBarViewController tabBar] items] objectAtIndex:0];
+
+    // set badge icon on tab bar if there's a notification
+    if ([UIApplication sharedApplication].applicationIconBadgeNumber > 0)
+    {
+        [tbi setBadgeValue:[NSString stringWithFormat:@"%ld",(long)[UIApplication sharedApplication].applicationIconBadgeNumber]];
+    }
+    else
+    {
+        [tbi setBadgeValue:nil];
     }
 }
 
@@ -340,7 +370,7 @@
     NSMutableURLRequest *theRequest=[NSMutableURLRequest
                                      requestWithURL:[NSURL URLWithString:queryString]
                                      cachePolicy:NSURLRequestReloadIgnoringCacheData
-                                     timeoutInterval:15.0];
+                                     timeoutInterval:20.0];
 
     [appDelegate loadingViewWillAppear];
     
@@ -360,6 +390,16 @@
     //NSError *error = nil;
 
     self.jsonResults = jsonDict;
+    
+    // show error to user if produced from server
+    if ([self.jsonResults objectForKey:@"code"] && [self.jsonResults objectForKey:@"message"])
+    {
+        if ([[self.jsonResults objectForKey:@"code"] intValue]>0)
+        {
+            //NSLog(@"code %@",[self.jsonResults objectForKey:@"code"]);
+            [self showAlertResponse:[self.jsonResults objectForKey:@"message"]];
+        }
+    }
 
     [[NSNotificationCenter defaultCenter] postNotificationName:@"connectionObserver" object:nil];
 
@@ -423,6 +463,11 @@
 // Display server response to the user
 - (void)showAlertResponse:(NSString *)response
 {
+    UIAlertView *alertName = [[UIAlertView alloc] initWithTitle:@"Error!" message:response delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    
+    // Set alert tag to make alertview unique
+    alertName.tag = 800;
+    [alertName show];
 }
 
 - (void)completeAlertView
@@ -485,5 +530,47 @@
     NSString *encodedString = [stringToEncode stringByReplacingOccurrencesOfString: @"&" withString: @"%26"];
     return encodedString;
 }
+
+- (NSString *)getCompany:(NSString *)cid
+{
+    NSDictionary *companies = [self.LOCAL_DB objectForKey:@"companies"];
+    NSString *companyName = @"";
+    
+    if (! [companies objectForKey:cid] || [[companies valueForKey:cid] isEqualToString:@""])
+    {
+        /*
+        NSString *urlString = [NSString stringWithFormat:@"%s/drop/companies.php?cid=%@", URL_ROOT, cid];
+        NSLog(@"companies url %@",urlString);
+        [appDelegate goURL:urlString];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCompany) name:@"connectionObserver" object:nil];
+        [[self.LOCAL_DB objectForKey:@"companies"] setObject:@"" forKey:cid];
+        [self.LOCAL_DB synchronize];
+         */
+        companyName = @"Unknown";
+    }
+    else
+    {
+        companyName = [companies objectForKey:cid];
+    }
+
+    return companyName;
+}
+
+/*
+- (void)saveCompany
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"connectionObserver" object:nil];
+
+    //NSLog(@"saving");
+    NSDictionary *company = [[self.jsonResults objectForKey:@"results"] objectAtIndex:0];
+    //if (! company || ! [company objectForKey:@"name"]) return;
+    
+    [[self.LOCAL_DB objectForKey:@"companies"] setObject:[company objectForKey:@"name"] forKey:[company objectForKey:@"id"]];
+    [self.LOCAL_DB synchronize];
+    //NSLog(@"c %@",company);
+    
+    //[self getCompany:[company objectForKey:@"id"]];
+}
+ */
 
 @end

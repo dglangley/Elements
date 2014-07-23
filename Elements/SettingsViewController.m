@@ -7,6 +7,8 @@
 //
 
 #import "SettingsViewController.h"
+#import "UIImageView+WebCache.h"
+#import "AccountsViewController.h"
 
 @interface SettingsViewController ()
 
@@ -17,18 +19,22 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
     
     self.navigationItem.title = @"Settings";
     [appDelegate addKeyboardBarWithOptions:NO];
 
-    brokerSites = [[NSArray alloc] initWithObjects:@"PowerSource",@"BrokerBin",@"Tel-Explorer", nil];
-    remoteDescrs = [[NSDictionary alloc] initWithObjectsAndKeys:@"FirstPoint",@"fp",@"E&M",@"em",@"North Georgia",@"ngt",@"Tel-Explorer",@"te",@"PowerSource",@"ps",@"BrokerBin",@"bb", nil];
-    remoteNames = [[NSArray alloc] initWithObjects:@"fp",@"em",@"ngt",@"te",@"ps",@"bb", nil];
     remotes = [[NSMutableArray alloc] init];//initWithObjects:@"N",@"Y",@"Y",@"Y",@"N",@"N",nil];
     
     self.settingsTableView.dataSource = self;
     self.settingsTableView.delegate = self;
+    
+    UILabel *disclosureLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, self.tabBarController.tabBar.frame.origin.y-35, self.view.frame.size.width-10, 30)];
+    disclosureLabel.text = @"Elements is not affiliated with featured broker sites, and acts only as a browser for mobile rendering with your exclusive membership to each respective site. For broker site membership questions, please contact the broker sites directly.";
+    disclosureLabel.font = [UIFont systemFontOfSize:10];
+    disclosureLabel.textColor = [UIColor grayColor];
+    disclosureLabel.numberOfLines = 0;
+    disclosureLabel.adjustsFontSizeToFitWidth = YES;
+    [self.view addSubview:disclosureLabel];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -36,75 +42,91 @@
     NSString *urlString = [NSString stringWithFormat:@"%s/drop/remotes.php", URL_ROOT];
     [appDelegate goURL:urlString];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshView:) name:@"connectionObserver" object:nil];
-}
-
-- (void)refreshView:(NSNotification *) notification
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"connectionObserver" object:nil];
-
-    if (! [appDelegate.jsonResults objectForKey:@"remotes"]) return;
-
-    NSDictionary *remoteDict = [appDelegate.jsonResults objectForKey:@"remotes"];
-    //NSLog(@"dict %@",remoteDict);
-    
-    for (int i = 0; i < 6; i++)
-    {
-        // determine if we're replacing objects or adding
-        if ([remotes count] > i)
-        {
-            [remotes replaceObjectAtIndex:i withObject:[remoteDict objectForKey:[remoteNames objectAtIndex:i]]];
-        }
-        else
-        {
-            [remotes insertObject:[remoteDict objectForKey:[remoteNames objectAtIndex:i]] atIndex:i];
-        }
-    }
-    //NSLog(@"remote %@",remotes);
-    [self.settingsTableView reloadData];
-    //[self.settingsTableView reloadSections:0 withRowAnimation:UITableViewRowAnimationAutomatic];
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshView:) name:@"connectionObserver" object:nil];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 2;
-    /*
-    if (section == 0)
-    {
-        return 6;
-    }
-    else
-    {
-        return 3;
-    }
-     */
+    return [appDelegate.remoteKeys count];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return [remotes count];
-    //return [brokerSites count]+1;
+    return 1;
+    //return [remotes count];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    return [remoteDescrs objectForKey:[remoteNames objectAtIndex:section]];
-    /*
-    if (section == 0)
-    {
-        return @"REMOTES";
-    }
-    else
-    {
-        return [brokerSites objectAtIndex:section-1];
-    }
-     */
+    return @"ACCOUNTS";
+    //return [appDelegate.remoteDescrs objectForKey:[appDelegate.remoteKeys objectAtIndex:section]];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *cellId;
-    UITableViewCell *cell;
+    NSString *cellId = @"settingsCell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
+    UILabel *nameLabel = [[UILabel alloc] init];
+    UILabel *helperLabel = [[UILabel alloc] init];
+    UIImageView *cellImage = [[UIImageView alloc] init];
+    UIImageView *lockImage = [[UIImageView alloc] init];
+
+    if (cell == nil)
+    {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellId];
+        [nameLabel setTag:11];
+        [nameLabel setFrame:CGRectMake(40, 5, 280, 20)];
+        [nameLabel setTextColor:[UIColor blackColor]];
+        [nameLabel setFont:[UIFont systemFontOfSize:13]];
+        
+        [cellImage setTag:12];
+        [cellImage setFrame:CGRectMake(5, 9, 24, 24)];
+        
+        [lockImage setTag:13];
+        [lockImage setFrame:CGRectMake(self.view.frame.size.width-50, 11, 18, 18)];
+        
+        [helperLabel setTag:14];
+        [helperLabel setFrame:CGRectMake(40, 20, 280, 20)];
+        [helperLabel setTextColor:[UIColor lightGrayColor]];
+        [helperLabel setFont:[UIFont systemFontOfSize:8]];
+    }
+    else
+    {
+        nameLabel = (UILabel *)[cell.contentView viewWithTag:11];
+        cellImage = (UIImageView *)[cell.contentView viewWithTag:12];
+        lockImage = (UIImageView *)[cell.contentView viewWithTag:13];
+        helperLabel = (UILabel *)[cell.contentView viewWithTag:14];
+    }
+    
+    NSString *remoteKey = [appDelegate.remoteKeys objectAtIndex:indexPath.row];
+    [nameLabel setText:[appDelegate.remoteDescrs objectForKey:remoteKey]];
+    [cell addSubview:nameLabel];
+    
+    cellImage.image = [UIImage imageNamed:remoteKey];
+    //NSURL *imgUrl = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.powersourceonline.com/favicon.ico"]];
+    //[cellImage setImageWithURL:imgUrl placeholderImage:[UIImage imageNamed:@"no-picture.png"]];
+    [cell addSubview:cellImage];
+    
+    if (indexPath.row == 0)
+    {
+        [lockImage removeFromSuperview];
+        lockImage.image = [UIImage imageNamed:@"checked_user"];
+        [cell addSubview:lockImage];
+        [helperLabel setText:@"Your Basic subscription includes this portal for FREE"];
+    }
+    else
+    {
+        lockImage.image = [UIImage imageNamed:@"locked"];
+        [cell addSubview:lockImage];
+        [helperLabel setText:@"This portal is available with a Premium subscription"];
+    }
+    [cell addSubview:helperLabel];
+    
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+
+    return cell;
+    
+    /*
     UITextField *cellTextField = [[UITextField alloc] initWithFrame:CGRectMake(14, 12, self.settingsTableView.frame.size.width-100, 20)];
     NSInteger cellTag = indexPath.row+1;
 
@@ -158,7 +180,6 @@
         }
         cellTextField.secureTextEntry = YES;
         cellTextField.text = [[remotes objectAtIndex:indexPath.section] objectForKey:@"password"];
-
     }
     cellTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     cellTextField.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -167,63 +188,14 @@
     [cell.contentView addSubview:cellTextField];
 
     return cell;
+     */
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [self performSegueWithIdentifier:@"accountsSegue" sender:indexPath];
+    
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-}
-
-- (void)didChangeRemoteToggle:(id) sender
-{
-    // declare the switch by its type based on the sender element
-    UISwitch *switchIsPressed = (UISwitch *)sender;
-    // get the indexPath of the cell containing the switch
-    NSIndexPath *indexPath = [self indexPathForCellContainingView:switchIsPressed];
-
-    [self saveRemote:indexPath];// :[sender isOn]];
-}
-
-- (void)textFieldEditingDidEnd:(UITextField *)textField
-{
-    NSIndexPath *indexPath = [self indexPathForCellContainingView:textField];
-
-    [self saveRemote:indexPath];
-}
-
-- (void)saveRemote:(NSIndexPath *)indexPath
-{
-    NSMutableArray *creds = [[NSMutableArray alloc] initWithObjects:@"",@"", nil];//login and password objects
-    
-    // get remote login and password by iterating through cells in this section
-    NSIndexPath *cellIndexPath;
-    UITableViewCell *cell;
-    UITextField *cellTextField;
-    UISwitch *remoteSwitch;
-    for (int row = 0; row < [self.settingsTableView numberOfRowsInSection:indexPath.section]; row++)
-    {
-        cellIndexPath = [NSIndexPath indexPathForRow:row inSection:indexPath.section];
-        cell = [self.settingsTableView cellForRowAtIndexPath:cellIndexPath];
-        cellTextField = (UITextField *)[cell.contentView viewWithTag:row+1];
-        [creds replaceObjectAtIndex:row withObject:cellTextField.text];
-        
-        if (row != 0) continue;
-        
-        // handle toggle switch
-        remoteSwitch = (UISwitch *)[cell.contentView viewWithTag:-1];
-    }
-
-    NSString *remoteSetting = @"N";
-    if ([remoteSwitch isOn]) remoteSetting = @"Y";
-    
-    // look up the value of the item that is referenced by the switch - this
-    // is from my datasource for the table view
-    NSString *remoteName = [remoteNames objectAtIndex:indexPath.section];
-    
-    NSString *urlString = [NSString stringWithFormat:@"%s/drop/remotes.php?remote=%@&remote_setting=%@&remote_login=%@&remote_password=%@", URL_ROOT, remoteName, remoteSetting, [creds objectAtIndex:0], [creds objectAtIndex:1]];
-    NSLog(@"ignitor url %@",urlString);
-    [appDelegate goURL:urlString];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshView:) name:@"connectionObserver" object:nil];
 }
 
 - (NSIndexPath *)indexPathForCellContainingView:(UIView *)view
@@ -238,6 +210,20 @@
     }
     
     return nil;
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:@"accountsSegue"])
+    {
+        //UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        //AccountsViewController *AccountsViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"AccountsViewController"];
+        
+        //[self.navigationController pushViewController:partDetailsViewController animated:YES];
+        AccountsViewController *avc = [segue destinationViewController];
+        NSIndexPath *indexPath = [self.settingsTableView indexPathForSelectedRow];
+        avc.brokerKey = [appDelegate.remoteKeys objectAtIndex:indexPath.row];
+    }
 }
 
 - (void)didReceiveMemoryWarning

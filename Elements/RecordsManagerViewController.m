@@ -128,21 +128,31 @@
 {
     NSString *cellId = @"recordCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
+    UITextField *cellTextField;// = [[UITextField alloc] initWithFrame:CGRectMake(85, 0, 215, 38)];
+    UILabel *cellLabel;// = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, 66, 38)];
+
     if (cell == nil)
     {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellId];
+        cellTextField = [[UITextField alloc] initWithFrame:CGRectMake(85, 0, 215, 38)];
+        [cellTextField setTag:31];
+        cellLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, 66, 38)];
+        [cellLabel setTag:30];
+
+    }
+    else
+    {
+        cellTextField = (UITextField *)[cell.contentView viewWithTag:31];
+        cellLabel = (UILabel *)[cell.contentView viewWithTag:30];
     }
     
-    UILabel *cellLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, 66, 38)];
-    UITextField *cellTextField = [[UITextField alloc] initWithFrame:CGRectMake(85, 0, 215, 38)];
-    
+    //NSLog(@"test %@",[cellLabels objectAtIndex:indexPath.row]);
     [cellLabel setText:[cellLabels objectAtIndex:indexPath.row]];
     [cell addSubview:cellLabel];
-    
+
     //UITextField *cellTextField = (UITextField *)[cell.contentView viewWithTag:indexPath.row+1];
     [cellTextField setPlaceholder:[cellLabels objectAtIndex:indexPath.row]];
     [cellTextField setText:[self.recordArray objectAtIndex:indexPath.row]];
-    [cellTextField setTag:(indexPath.row+1)];
     [cell addSubview:cellTextField];
 
     //NSLog(@"text %@",cellTextField.text);
@@ -184,6 +194,7 @@
         [appDelegate.dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
         recordDate = [[appDelegate dateFormatter] dateFromString:dateStr];
 
+        //NSLog(@"date %@",recordDate);
         [dateTimePicker setDate:recordDate];
         [cellTextField setInputView:dateTimePicker];
     }
@@ -225,7 +236,7 @@
     NSString *partId = [[self.recordArray objectAtIndex:8] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (partId == nil) partId = @"";
     
-    NSString *masterPartId = [[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"partid"];
+    NSString *masterPartId = [[homeViewController.results objectAtIndex:self.resultsIndexPath.section] objectForKey:@"pid"];
     NSString *queryString = [NSString stringWithFormat:@"%s/drop/save_record.php?company=%@&qty=%@&ref1=%@&price=%@&datetime=%@&recordid=%@&categoryid=%@&order_number=%@&partid=%@&master_partid=%@",URL_ROOT,company,qty,ref1,price,date,recordId,categoryId,orderNum,partId,masterPartId];
     NSLog(@"records url %@",queryString);
     [appDelegate requestURL:queryString];
