@@ -49,6 +49,9 @@
 		CFED9B2219803B8100F20568 /* locked.png in Resources */ = {isa = PBXBuildFile; fileRef = CFED9B2119803B8100F20568 /* locked.png */; };
 		CFED9B241980511500F20568 /* checked_user.png in Resources */ = {isa = PBXBuildFile; fileRef = CFED9B231980511500F20568 /* checked_user.png */; };
 		CFED9B271980594100F20568 /* AccountsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CFED9B261980594100F20568 /* AccountsViewController.m */; };
+		CFED9B291980C4CF00F20568 /* remoteGo.png in Resources */ = {isa = PBXBuildFile; fileRef = CFED9B281980C4CF00F20568 /* remoteGo.png */; };
+		CFED9B2B1980C50200F20568 /* remotePause.png in Resources */ = {isa = PBXBuildFile; fileRef = CFED9B2A1980C50200F20568 /* remotePause.png */; };
+		CFED9B2E1980D66B00F20568 /* PremiumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CFED9B2D1980D66B00F20568 /* PremiumViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -139,6 +142,10 @@
 		CFED9B231980511500F20568 /* checked_user.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checked_user.png; sourceTree = "<group>"; };
 		CFED9B251980594100F20568 /* AccountsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountsViewController.h; sourceTree = "<group>"; };
 		CFED9B261980594100F20568 /* AccountsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountsViewController.m; sourceTree = "<group>"; };
+		CFED9B281980C4CF00F20568 /* remoteGo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = remoteGo.png; sourceTree = "<group>"; };
+		CFED9B2A1980C50200F20568 /* remotePause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = remotePause.png; sourceTree = "<group>"; };
+		CFED9B2C1980D66B00F20568 /* PremiumViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PremiumViewController.h; sourceTree = "<group>"; };
+		CFED9B2D1980D66B00F20568 /* PremiumViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PremiumViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -216,6 +223,8 @@
 				CF465F4C186D299C0033277E /* LoadingView.h */,
 				CF465F4D186D299C0033277E /* LoadingView.m */,
 				CF465F26186C15080033277E /* Main.storyboard */,
+				CFED9B2C1980D66B00F20568 /* PremiumViewController.h */,
+				CFED9B2D1980D66B00F20568 /* PremiumViewController.m */,
 				CF465F29186C15080033277E /* HomeViewController.h */,
 				CF465F2A186C15080033277E /* HomeViewController.m */,
 				CF465F2C186C15080033277E /* SettingsViewController.h */,
@@ -269,6 +278,8 @@
 		CF52A02918F479A700B8ECA4 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				CFED9B2A1980C50200F20568 /* remotePause.png */,
+				CFED9B281980C4CF00F20568 /* remoteGo.png */,
 				CFED9B231980511500F20568 /* checked_user.png */,
 				CFED9B2119803B8100F20568 /* locked.png */,
 				CFED9B1F198039D600F20568 /* bb.png */,
@@ -415,8 +426,10 @@
 				CFED9B1B198034A600F20568 /* te.png in Resources */,
 				CFED9B241980511500F20568 /* checked_user.png in Resources */,
 				CF465F30186C15080033277E /* Images.xcassets in Resources */,
+				CFED9B2B1980C50200F20568 /* remotePause.png in Resources */,
 				CF465F1F186C15080033277E /* InfoPlist.strings in Resources */,
 				CF465F28186C15080033277E /* Main.storyboard in Resources */,
+				CFED9B291980C4CF00F20568 /* remoteGo.png in Resources */,
 				CFED9B1E198038FA00F20568 /* ps.png in Resources */,
 				CFED9B20198039D600F20568 /* bb.png in Resources */,
 				CF52A02B18F479B100B8ECA4 /* no-picture.png in Resources */,
@@ -448,6 +461,7 @@
 				CF52A05718F47B3600B8ECA4 /* UIImage+WebP.m in Sources */,
 				CF465F21186C15080033277E /* main.m in Sources */,
 				CF3B2D28188E459A00DD042F /* LeftViewController.m in Sources */,
+				CFED9B2E1980D66B00F20568 /* PremiumViewController.m in Sources */,
 				CF465F4E186D299C0033277E /* LoadingView.m in Sources */,
 				CF52A05418F47B3600B8ECA4 /* UIButton+WebCache.m in Sources */,
 				CF52A05318F47B3600B8ECA4 /* SDWebImagePrefetcher.m in Sources */,

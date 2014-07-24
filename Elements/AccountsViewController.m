@@ -27,6 +27,25 @@
     [super viewDidLoad];
     
     self.navigationItem.titleView = self.remoteSegmentedControl;
+    [appDelegate addKeyboardBarWithOptions:NO];
+    
+    self.accountsTableView.dataSource = self;
+    self.accountsTableView.delegate = self;
+    
+    /* Unselected background */
+    /*
+    UIImage *unselectedBackgroundImage = [[UIImage imageNamed:@"remoteGo"] resizableImageWithCapInsets:UIEdgeInsetsMake(10, 10, 10, 10)];
+    [[UISegmentedControl appearance] setBackgroundImage:unselectedBackgroundImage
+                                               forState:UIControlStateNormal
+                                             barMetrics:UIBarMetricsDefault];
+    */
+    /* Selected background */
+    /*
+    UIImage *selectedBackgroundImage = [[UIImage imageNamed:@"remotePause"] resizableImageWithCapInsets:UIEdgeInsetsMake(10, 10, 10, 10)];
+    [[UISegmentedControl appearance] setBackgroundImage:selectedBackgroundImage
+                                               forState:UIControlStateSelected
+                                             barMetrics:UIBarMetricsDefault];
+     */
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -53,12 +72,54 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 0;
+    return 2;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return nil;
+    NSString *cellId = @"settingsCell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
+    UILabel *cellLabel = [[UILabel alloc] init];
+    UITextField *cellTextField = [[UITextField alloc] init];
+    NSString *fieldHolder;
+    
+    if (indexPath.row == 0)
+    {
+         fieldHolder = @"Login";
+    }
+    else if (indexPath.row == 1)
+    {
+        fieldHolder = @"Password";
+    }
+    
+    if (cell == nil)
+    {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellId];
+        [cellLabel setTag:11];
+        [cellLabel setFrame:CGRectMake(10, 10, 80, 20)];
+        [cellLabel setFont:[UIFont systemFontOfSize:14]];
+        [cellLabel setTextColor:[UIColor darkGrayColor]];
+        [cellTextField setTag:12];
+        [cellTextField setFrame:CGRectMake(100, 11, 210, 20)];
+        [cellTextField setPlaceholder:[fieldHolder lowercaseString]];
+        [cellTextField setText:[[remoteSettings objectForKey:self.brokerKey] objectForKey:[fieldHolder lowercaseString]]];
+        [cellTextField setFont:[UIFont systemFontOfSize:14]];
+        cellTextField.inputAccessoryView = appDelegate.keyboardToolbar;
+    }
+    else
+    {
+        cellLabel = (UILabel *)[cell.contentView viewWithTag:11];
+        cellTextField = (UITextField *)[cell.contentView viewWithTag:12];
+    }
+    cellLabel.text = fieldHolder;
+    
+    cellTextField.secureTextEntry = NO;
+    if ([fieldHolder isEqualToString:@"Password"]) cellTextField.secureTextEntry = YES;
+
+    [cell addSubview:cellLabel];
+    [cell addSubview:cellTextField];
+    
+    return cell;
 }
 
 

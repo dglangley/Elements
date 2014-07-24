@@ -14,5 +14,6 @@
     NSMutableArray *remotes;
 }
 @property (strong, nonatomic) IBOutlet UITableView *settingsTableView;
+@property (nonatomic) BOOL isPremiumAccount;
 
 @end

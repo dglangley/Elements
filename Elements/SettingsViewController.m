@@ -193,7 +193,14 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self performSegueWithIdentifier:@"accountsSegue" sender:indexPath];
+    if (indexPath.row == 0 || self.isPremiumAccount)
+    {
+        [self performSegueWithIdentifier:@"accountsSegue" sender:indexPath];
+    }
+    else
+    {
+        [self performSegueWithIdentifier:@"premiumSubscriptionSegue" sender:indexPath];
+    }
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
@@ -216,10 +223,11 @@
 {
     if ([[segue identifier] isEqualToString:@"accountsSegue"])
     {
-        //UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        //AccountsViewController *AccountsViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"AccountsViewController"];
-        
-        //[self.navigationController pushViewController:partDetailsViewController animated:YES];
+        if (self.isPremiumAccount)
+        {
+            // something here for premium subscription slide-up
+            return;
+        }
         AccountsViewController *avc = [segue destinationViewController];
         NSIndexPath *indexPath = [self.settingsTableView indexPathForSelectedRow];
         avc.brokerKey = [appDelegate.remoteKeys objectAtIndex:indexPath.row];
