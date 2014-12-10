@@ -54,24 +54,6 @@
     
     [appDelegate addKeyboardBarWithOptions:NO];
     self.searchBar.inputAccessoryView = appDelegate.keyboardToolbar;
-    
-    pg = 0;// number that represents how many paged results
-    isLoadingOffsetResults = NO;// don't load results while loading more
-
-    //call the refresh function
-    [appDelegate.refreshControl addTarget:self action:@selector(refreshTableView)
-                  forControlEvents:UIControlEventValueChanged];
-    [self.resultsTableView addSubview:appDelegate.refreshControl];
-    
-    // initialize
-    masterResults = [[NSMutableArray alloc] init];
-    
-    forceLoadResults = YES;
-    [self loadResults];
-
-    // set observer for updates from the next view so our data source can be updated automatically
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(simpleRefreshSection) name:@"updateHomeResults" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSearchBar:) name:@"updateSearchBar" object:nil];
 
     self.resultsTableView.tableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.resultsTableView.bounds.size.width, 20.0f)];
     
@@ -105,6 +87,30 @@
     
     //NSLog(@"badge %d",[UIApplication sharedApplication].applicationIconBadgeNumber);
     //[[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+    
+    if (! [appDelegate.cookies objectForKey:@"userid"])
+    {
+        [self performSegueWithIdentifier:@"accountRegistrationSegue" sender:nil];
+        return;
+    }
+    
+    pg = 0;// number that represents how many paged results
+    isLoadingOffsetResults = NO;// don't load results while loading more
+    
+    //call the refresh function
+    [appDelegate.refreshControl addTarget:self action:@selector(refreshTableView)
+                         forControlEvents:UIControlEventValueChanged];
+    [self.resultsTableView addSubview:appDelegate.refreshControl];
+    
+    // initialize
+    masterResults = [[NSMutableArray alloc] init];
+    
+    forceLoadResults = YES;
+    [self loadResults];
+    
+    // set observer for updates from the next view so our data source can be updated automatically
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(simpleRefreshSection) name:@"updateHomeResults" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSearchBar:) name:@"updateSearchBar" object:nil];
 }
 
 - (void)scrollViewDidScroll :(UIScrollView *)scrollView
@@ -251,7 +257,7 @@
             self.results = [appDelegate.jsonResults objectForKey:@"results"];
         }
     
-        NSLog(@"companies %@",[appDelegate.jsonResults objectForKey:@"companies"]);
+        //NSLog(@"companies %@",[appDelegate.jsonResults objectForKey:@"companies"]);
         [appDelegate.LOCAL_DB setObject:[appDelegate.jsonResults objectForKey:@"companies"] forKey:@"companies"];
         [appDelegate.LOCAL_DB synchronize];
     
@@ -262,7 +268,6 @@
     }
     forceLoadResults = NO;
 
-    NSLog(@"here:%@",[appDelegate jsonResults]);
     [self simpleRefreshSection];
     
     //close keyboard and resign focus from search bar
@@ -366,7 +371,7 @@
     int bumperLeft = 60;//span of image that serves as a left bumper for other labels
     
     // shows current qty total
-    UILabel *qtyLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-35,5,30,20)];
+    UILabel *qtyLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width-35,5,25,20)];
     // part/heci string
     UILabel *topLabel = [[UILabel alloc] initWithFrame:CGRectMake(bumperLeft+10,3,self.view.bounds.size.width-(bumperLeft+60),30)];
     // item description
@@ -420,7 +425,7 @@
         
         qtyLabel.tag = 21;
         qtyLabel.font = [UIFont systemFontOfSize:16];
-        qtyLabel.textColor = [UIColor colorWithRed:143.0/255.0 green:94.0/255.0 blue:23.0/255.0 alpha:1.0f];
+        qtyLabel.textColor = appDelegate.color2;
         qtyLabel.adjustsFontSizeToFitWidth = YES;
         qtyLabel.textAlignment = NSTextAlignmentRight;
         qtyLabel.contentMode = UIViewContentModeScaleAspectFit;

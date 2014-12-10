@@ -13,6 +13,8 @@
 
 #define URL_ROOT "http://lunacera.local"//www.lunacera.com"//
 
+#define DEFAULT_FONT(s)       [UIFont fontWithName:@"TamilSangamMN" size:(s-1)]
+
 @class LeftViewController;
 @class HomeViewController;
 
@@ -25,7 +27,7 @@
 @property (strong, nonatomic) LoadingView *LoadingVC;
 @property (strong, nonatomic) UINavigationController *navViewController;
 @property (strong, nonatomic) UITabBarController *tabBarViewController;
-@property (strong, nonatomic) NSDictionary *jsonResults;
+@property (strong, nonatomic) NSDictionary *jsonResults, *remoteDescrs;
 @property (strong, nonatomic) NSDateFormatter *dateFormatter;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
 @property (strong, nonatomic) UIToolbar *keyboardToolbar;
@@ -34,9 +36,9 @@
 @property (strong, nonatomic) LeftViewController* leftViewController;
 @property (strong, nonatomic) HomeViewController *HomeVC;
 @property (strong, nonatomic) NSUserDefaults *LOCAL_DB;
-@property (strong, nonatomic) NSDictionary *remoteDescrs;
-@property (strong, nonatomic) NSArray *remoteKeys;
-
+@property (strong, nonatomic) NSMutableDictionary *cookies;
+@property (strong, nonatomic) NSArray *remoteKeys, *cookiesArray;
+@property (strong, nonatomic) UIColor *color1, *color2;
 
 //for singleton class
 //@property (strong, nonatomic) SingletonData *singleton;
@@ -52,5 +54,6 @@
 - (NSString *)stringByEncodingAmpersands:(NSString *)stringToEncode;
 - (void)updateTabBarBadge;
 - (NSString *)getCompany:(NSString *)cid;
+- (void)styleViews;
 
 @end

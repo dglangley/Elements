@@ -28,7 +28,7 @@
     self.settingsTableView.delegate = self;
     
     UILabel *disclosureLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, self.tabBarController.tabBar.frame.origin.y-35, self.view.frame.size.width-10, 30)];
-    disclosureLabel.text = @"LunaCera is not affiliated with featured broker sites, and acts only as a browser for mobile rendering with your exclusive membership to each respective site. For broker site membership questions, please contact the broker sites directly.";
+    disclosureLabel.text = @"LunaCera is not affiliated with featured exchange sites, and acts only as a browser for mobile rendering with your exclusive membership to each respective site. For exchange site membership questions, please contact the broker sites directly.";
     disclosureLabel.font = [UIFont systemFontOfSize:10];
     disclosureLabel.textColor = [UIColor grayColor];
     disclosureLabel.numberOfLines = 0;
@@ -41,7 +41,14 @@
     NSString *urlString = [NSString stringWithFormat:@"%s/remotes.php", URL_ROOT];
     [appDelegate goURL:urlString];
     
-    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshView:) name:@"connectionObserver" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshView:) name:@"connectionObserver" object:nil];
+}
+
+- (void)refreshView:(NSNotification *) notification
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"connectionObserver" object:nil];
+    
+    [self.settingsTableView reloadData];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -99,27 +106,29 @@
     
     NSString *remoteKey = [appDelegate.remoteKeys objectAtIndex:indexPath.row];
     [nameLabel setText:[appDelegate.remoteDescrs objectForKey:remoteKey]];
-    [cell addSubview:nameLabel];
+    [cell.contentView addSubview:nameLabel];
     
     cellImage.image = [UIImage imageNamed:remoteKey];
     //NSURL *imgUrl = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.powersourceonline.com/favicon.ico"]];
     //[cellImage setImageWithURL:imgUrl placeholderImage:[UIImage imageNamed:@"no-picture.png"]];
-    [cell addSubview:cellImage];
+    [cell.contentView addSubview:cellImage];
     
-    if (indexPath.row == 0)
+    if (! [appDelegate.jsonResults objectForKey:@"remotes"]
+        || [[[[appDelegate.jsonResults objectForKey:@"remotes"] objectForKey:remoteKey] objectForKey:@"setting"] isEqualToString:@"N"])
     {
-        [lockImage removeFromSuperview];
-        lockImage.image = [UIImage imageNamed:@"checked_user"];
-        [cell addSubview:lockImage];
-        [helperLabel setText:@"Your Basic subscription includes this portal for FREE"];
+        lockImage.image = [UIImage imageNamed:@"locked"];
+        [helperLabel setText:@"Enter your login and password to activate"];
     }
     else
     {
-        lockImage.image = [UIImage imageNamed:@"locked"];
-        [cell addSubview:lockImage];
-        [helperLabel setText:@"This portal is available with a Premium subscription"];
+        //NSLog(@"key %@:%@",remoteKey, [[appDelegate.jsonResults objectForKey:@"remotes"] objectForKey:remoteKey]);
+
+        [lockImage removeFromSuperview];
+        lockImage.image = [UIImage imageNamed:@"checked_user"];
+        [helperLabel setText:@"Activated!"];
     }
-    [cell addSubview:helperLabel];
+    [cell.contentView addSubview:lockImage];
+    [cell.contentView addSubview:helperLabel];
     
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
@@ -192,6 +201,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [self performSegueWithIdentifier:@"accountsSegue" sender:indexPath];
+    //commented 12/4/14
+    /*
     if (indexPath.row == 0 || self.isPremiumAccount)
     {
         [self performSegueWithIdentifier:@"accountsSegue" sender:indexPath];
@@ -200,6 +212,7 @@
     {
         [self performSegueWithIdentifier:@"premiumSubscriptionSegue" sender:indexPath];
     }
+     */
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }

@@ -84,7 +84,7 @@
     
     if (indexPath.row == 0)
     {
-         fieldHolder = @"Login";
+        fieldHolder = @"Login";
     }
     else if (indexPath.row == 1)
     {

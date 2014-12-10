@@ -43,6 +43,7 @@
 		CF97A4D61A2E93EA00B664FC /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = CF97A4C41A2E93EA00B664FC /* UIImageView+HighlightedWebCache.m */; };
 		CF97A4D71A2E93EA00B664FC /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = CF97A4C61A2E93EA00B664FC /* UIImageView+WebCache.m */; };
 		CF97A4D81A2E93EA00B664FC /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = CF97A4C81A2E93EA00B664FC /* UIView+WebCacheOperation.m */; };
+		CF97A4DC1A37EE4300B664FC /* lunarEclipseSunrise@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CF97A4DB1A37EE4300B664FC /* lunarEclipseSunrise@2x.png */; };
 		CFC6E988187A7BA3001DE63E /* RecordsManagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CFC6E987187A7BA3001DE63E /* RecordsManagerViewController.m */; };
 		CFDC712F1879D9900067DAEE /* PartDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CFDC712E1879D9900067DAEE /* PartDetailsViewController.m */; };
 		CFED9B1B198034A600F20568 /* te.png in Resources */ = {isa = PBXBuildFile; fileRef = CFED9B1A198034A600F20568 /* te.png */; };
@@ -137,6 +138,7 @@
 		CF97A4C61A2E93EA00B664FC /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
 		CF97A4C71A2E93EA00B664FC /* UIView+WebCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WebCacheOperation.h"; sourceTree = "<group>"; };
 		CF97A4C81A2E93EA00B664FC /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
+		CF97A4DB1A37EE4300B664FC /* lunarEclipseSunrise@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lunarEclipseSunrise@2x.png"; sourceTree = "<group>"; };
 		CFC6E986187A7BA3001DE63E /* RecordsManagerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordsManagerViewController.h; sourceTree = "<group>"; };
 		CFC6E987187A7BA3001DE63E /* RecordsManagerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordsManagerViewController.m; sourceTree = "<group>"; };
 		CFDC712D1879D9900067DAEE /* PartDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PartDetailsViewController.h; sourceTree = "<group>"; };
@@ -284,6 +286,7 @@
 		CF52A02918F479A700B8ECA4 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				CF97A4DB1A37EE4300B664FC /* lunarEclipseSunrise@2x.png */,
 				CFED9B2A1980C50200F20568 /* remotePause.png */,
 				CFED9B281980C4CF00F20568 /* remoteGo.png */,
 				CFED9B231980511500F20568 /* checked_user.png */,
@@ -435,6 +438,7 @@
 				CFED9B1B198034A600F20568 /* te.png in Resources */,
 				CFED9B241980511500F20568 /* checked_user.png in Resources */,
 				CF465F30186C15080033277E /* Images.xcassets in Resources */,
+				CF97A4DC1A37EE4300B664FC /* lunarEclipseSunrise@2x.png in Resources */,
 				CFED9B2B1980C50200F20568 /* remotePause.png in Resources */,
 				CF465F1F186C15080033277E /* InfoPlist.strings in Resources */,
 				CF465F28186C15080033277E /* Main.storyboard in Resources */,

@@ -19,8 +19,15 @@
 {
     // Override point for customization after application launch.
     UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    
+    self.color1 = [UIColor colorWithRed:78.0/255.0 green:184.0/255.0 blue:0.0 alpha:1.0];
+    self.color2 = [UIColor colorWithRed:1.0/255.0 green:72.0/255.0 blue:135.0/255.0 alpha:1.0f];
+    
     //self.tabBarViewController = (UITabBarController *)self.window.rootViewController;
     self.tabBarViewController = [storyboard instantiateViewControllerWithIdentifier:@"tabBarViewController"];
+    [self.tabBarViewController.tabBar setTintColor:self.color1];
+    //[[UITabBar appearance] setTintColor:[UIColor redColor]];
+
     self.navViewController = (UINavigationController *)self.tabBarViewController.navigationController;
     [self.navViewController.navigationBar setContentMode:UIViewContentModeScaleAspectFit];
 	self.leftViewController = [storyboard instantiateViewControllerWithIdentifier:@"leftViewController"];
@@ -28,6 +35,14 @@
     
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
     {
+    }
+    
+    self.cookies = [[NSMutableDictionary alloc] init];
+    self.cookiesArray = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
+    for (NSHTTPCookie *cookie in self.cookiesArray)
+    {
+        [self.cookies setValue:[cookie value] forKey:[cookie name]];
+
     }
     
     self.LOCAL_DB = [NSUserDefaults standardUserDefaults];  //load NSUserDefaults
@@ -67,8 +82,10 @@
     // enable swipe gesture on nav bar
     [self.navViewController.navigationBar addGestureRecognizer:self.revealController.revealPanGestureRecognizer];
     
-    self.remoteDescrs = [[NSDictionary alloc] initWithObjectsAndKeys:@"Tel-Explorer",@"te",@"PowerSource",@"ps",@"BrokerBin",@"bb",@"FirstPoint",@"fp",@"E&M",@"em",@"North Georgia",@"ngt", nil];
-    self.remoteKeys = [[NSArray alloc] initWithObjects:@"te",@"ps",@"bb",@"fp",@"em",@"ngt", nil];
+    self.remoteDescrs = [[NSDictionary alloc] initWithObjectsAndKeys:@"PowerSource",@"ps",@"BrokerBin",@"bb",@"Tel-Explorer",@"te", nil];
+    self.remoteKeys = [[NSArray alloc] initWithObjects:@"ps",@"bb",@"te", nil];
+    
+    [self styleViews];
     
     return YES;
 }
@@ -184,6 +201,22 @@
     NSString *descrString = [NSString stringWithFormat:@"%@%@",sys, descr];
     
     return descrString;
+}
+
+- (void)styleViews
+{
+    [[UITextField appearance] setFont:DEFAULT_FONT(17)];
+    [[UITextField appearance] setBackgroundColor:[UIColor colorWithRed:255 green:255 blue:255 alpha:0.7]];
+    [[UITextField appearance] setBorderStyle:UITextBorderStyleNone];
+    // create padding on left and right of text field
+    
+    UIView *paddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 8, 20)];
+    [[UITextField appearance] setLeftView:paddingView];
+    [[UITextField appearance] setLeftViewMode:UITextFieldViewModeAlways];
+    // somehow I need this set, but I can't use it in setRightViewMode or the view won't appear
+    [[UITextField appearance] setRightView:paddingView];
+
+    [[UISegmentedControl appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:DEFAULT_FONT(18), NSFontAttributeName, nil] forState:UIControlStateNormal];
 }
 
 
