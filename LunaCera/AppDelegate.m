@@ -115,7 +115,8 @@
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
     // Check if push notifications are enabled
-    [self checkPushNotifications];
+    //disabled for now, 12/12/14
+    //[self checkPushNotifications];
     
     [self updateTabBarBadge];
 }
@@ -412,6 +413,7 @@
         //Do stuff that you would do if the application was not active
     }
 }
+
 
 - (void)updateTabBarBadge
 {

@@ -83,30 +83,40 @@
     [registerFirstName setFrame:CGRectMake(10, textFieldY, textFieldWidth, textFieldHeight)];
     [registerFirstName setPlaceholder:@"First name"];
     [registerFirstName setReturnKeyType:UIReturnKeyNext];
+    [registerFirstName setKeyboardType:UIKeyboardTypeDefault];
+    [registerFirstName setAutocapitalizationType:UITextAutocapitalizationTypeWords];
     [registerFirstName setDelegate:self];
     [registerView addSubview:registerFirstName];
     
     [registerLastName setFrame:CGRectMake(10, textFieldY+textFieldHeight+1, textFieldWidth, textFieldHeight)];
     [registerLastName setPlaceholder:@"Last name"];
     [registerLastName setReturnKeyType:UIReturnKeyNext];
+    [registerLastName setKeyboardType:UIKeyboardTypeDefault];
+    [registerLastName setAutocapitalizationType:UITextAutocapitalizationTypeWords];
     [registerLastName setDelegate:self];
     [registerView addSubview:registerLastName];
     
     [registerCompanyName setFrame:CGRectMake(10, (textFieldY+textFieldHeight)*2, textFieldWidth, textFieldHeight)];
     [registerCompanyName setReturnKeyType:UIReturnKeyNext];
     [registerCompanyName setPlaceholder:@"Company name"];
+    [registerCompanyName setKeyboardType:UIKeyboardTypeDefault];
+    [registerCompanyName setAutocapitalizationType:UITextAutocapitalizationTypeWords];
     [registerCompanyName setDelegate:self];
     [registerView addSubview:registerCompanyName];
     
     [registerEmail1 setFrame:CGRectMake(10, (textFieldY+textFieldHeight)*3, textFieldWidth, textFieldHeight)];
     [registerEmail1 setPlaceholder:@"Email address"];
     [registerEmail1 setReturnKeyType:UIReturnKeyNext];
+    [registerEmail1 setKeyboardType:UIKeyboardTypeEmailAddress];
+    [registerEmail1 setAutocapitalizationType:UITextAutocapitalizationTypeNone];
     [registerEmail1 setDelegate:self];
     [registerView addSubview:registerEmail1];
     
     [registerEmail2 setFrame:CGRectMake(10, ((textFieldY+textFieldHeight)*3)+textFieldHeight+1, textFieldWidth, textFieldHeight)];
     [registerEmail2 setPlaceholder:@"Verify your email"];
     [registerEmail2 setReturnKeyType:UIReturnKeyNext];
+    [registerEmail2 setKeyboardType:UIKeyboardTypeEmailAddress];
+    [registerEmail2 setAutocapitalizationType:UITextAutocapitalizationTypeNone];
     [registerEmail2 setDelegate:self];
     [registerView addSubview:registerEmail2];
     
@@ -114,6 +124,8 @@
     [registerPassword1 setPlaceholder:@"Password (minimum of 6 characters)"];
     [registerPassword1 setSecureTextEntry:YES];
     [registerPassword1 setReturnKeyType:UIReturnKeyNext];
+    [registerPassword1 setKeyboardType:UIKeyboardTypeDefault];
+    [registerPassword1 setAutocapitalizationType:UITextAutocapitalizationTypeNone];
     [registerPassword1 setDelegate:self];
     [registerView addSubview:registerPassword1];
     
@@ -121,6 +133,8 @@
     [registerPassword2 setPlaceholder:@"Verify your password"];
     [registerPassword2 setSecureTextEntry:YES];
     [registerPassword2 setReturnKeyType:UIReturnKeyGo];
+    [registerPassword2 setKeyboardType:UIKeyboardTypeDefault];
+    [registerPassword2 setAutocapitalizationType:UITextAutocapitalizationTypeNone];
     [registerPassword2 setDelegate:self];
     [registerView addSubview:registerPassword2];
     
@@ -137,6 +151,8 @@
     [loginEmail setFrame:CGRectMake(10, textFieldY, textFieldWidth, textFieldHeight)];
     [loginEmail setPlaceholder:@"Email address"];
     [loginEmail setReturnKeyType:UIReturnKeyNext];
+    [loginEmail setKeyboardType:UIKeyboardTypeEmailAddress];
+    [loginEmail setAutocapitalizationType:UITextAutocapitalizationTypeNone];
     [loginEmail setDelegate:self];
     [loginView addSubview:loginEmail];
     
@@ -144,6 +160,8 @@
     [loginPassword setPlaceholder:@"Password"];
     [loginPassword setSecureTextEntry:YES];
     [loginPassword setReturnKeyType:UIReturnKeyGo];
+    [loginPassword setKeyboardType:UIKeyboardTypeDefault];
+    [loginPassword setAutocapitalizationType:UITextAutocapitalizationTypeNone];
     [loginPassword setDelegate:self];
     [loginView addSubview:loginPassword];
     

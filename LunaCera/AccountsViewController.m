@@ -116,8 +116,14 @@
     [cellTextField setText:[[remoteSettings objectForKey:self.brokerKey] objectForKey:[fieldHolder lowercaseString]]];
     [cellTextField setTag:textfieldTag];
     [cellTextField setSecureTextEntry:NO];
+    [cellTextField setKeyboardType:UIKeyboardTypeEmailAddress];
+    [cellTextField setAutocapitalizationType:UITextAutocapitalizationTypeNone];
     
-    if ([fieldHolder isEqualToString:@"Password"]) [cellTextField setSecureTextEntry:YES];
+    if ([fieldHolder isEqualToString:@"Password"])
+    {
+        [cellTextField setSecureTextEntry:YES];
+        [cellTextField setKeyboardType:UIKeyboardTypeDefault];
+    }
 
     [cell addSubview:cellLabel];
     [cell addSubview:cellTextField];

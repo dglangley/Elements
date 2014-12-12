@@ -55,7 +55,9 @@
     //NSLog(@"today %@",today);
     
     [appDelegate addKeyboardBarWithOptions:NO];
-    self.searchBar.inputAccessoryView = appDelegate.keyboardToolbar;
+    [self.searchBar setInputAccessoryView:appDelegate.keyboardToolbar];
+    [self.searchBar setKeyboardType:UIKeyboardTypeDefault];
+    [self.searchBar setAutocapitalizationType:UITextAutocapitalizationTypeNone];
     CGRect searchFrame = self.searchBar.frame;
     [self.searchBar setFrame:CGRectMake(0, statusBarHeight, searchFrame.size.width, searchFrame.size.height)];
     

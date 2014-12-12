@@ -11,7 +11,7 @@
 
 #define appDelegate ((AppDelegate*)[[UIApplication sharedApplication] delegate])
 
-#define URL_ROOT "http://lunacera.local"//https://www.lunacera.com"//
+#define URL_ROOT "https://www.lunacera.com"//http://lunacera.local"//
 
 #define DEFAULT_FONT(s)       [UIFont fontWithName:@"TamilSangamMN" size:(s-1)]
 
