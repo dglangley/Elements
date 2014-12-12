@@ -7,6 +7,7 @@
 
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
+#import "HomeViewController.h"
 
 @interface SettingsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 {
@@ -14,5 +15,6 @@
 }
 @property (strong, nonatomic) IBOutlet UITableView *settingsTableView;
 @property (nonatomic) BOOL isPremiumAccount;
+@property (strong, nonatomic) HomeViewController *homeViewController;
 
 @end

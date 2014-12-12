@@ -31,6 +31,7 @@
     UINavigationBar *navBar = self.navigationController.navigationBar;
     [navBar setContentMode:UIViewContentModeScaleAspectFit];
     [navBar setContentScaleFactor:0.5f];
+    [self.navigationController.navigationBar setTintColor:appDelegate.color2];
 
     homeViewController = [self.navigationController.viewControllers objectAtIndex:0];
     

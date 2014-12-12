@@ -15,6 +15,8 @@
 
 @implementation SettingsViewController
 
+@synthesize homeViewController;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -27,6 +29,15 @@
     self.settingsTableView.dataSource = self;
     self.settingsTableView.delegate = self;
     
+    UIButton *logoutButton = [[UIButton alloc] init];
+    [logoutButton.titleLabel setFont:DEFAULT_FONT(18)];
+    [logoutButton setFrame:CGRectMake(10, self.tabBarController.tabBar.frame.origin.y-100, self.view.frame.size.width-20, 36)];
+    [logoutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [logoutButton addTarget:self action:@selector(willSignout) forControlEvents:UIControlEventTouchUpInside];
+    [logoutButton setBackgroundColor:[appDelegate color3]];
+    [logoutButton setTitle:@"Sign Out" forState:UIControlStateNormal];
+    [self.view addSubview:logoutButton];
+    
     UILabel *disclosureLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, self.tabBarController.tabBar.frame.origin.y-35, self.view.frame.size.width-10, 30)];
     disclosureLabel.text = @"LunaCera is not affiliated with featured exchange sites, and acts only as a browser for mobile rendering with your exclusive membership to each respective site. For exchange site membership questions, please contact the broker sites directly.";
     disclosureLabel.font = [UIFont systemFontOfSize:10];
@@ -38,7 +49,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    NSString *urlString = [NSString stringWithFormat:@"%s/remotes.php", URL_ROOT];
+    NSString *urlString = [NSString stringWithFormat:@"%s/remotes.php?json=1", URL_ROOT];
     [appDelegate goURL:urlString];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshView:) name:@"connectionObserver" object:nil];
@@ -229,6 +240,23 @@
     }
     
     return nil;
+}
+
+- (void)willSignout
+{
+    NSString *urlString = [NSString stringWithFormat:@"%s/signout.php?json=1", URL_ROOT];
+    [appDelegate goURL:urlString];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSignout) name:@"connectionObserver" object:nil];
+}
+
+- (void)didSignout
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"connectionObserver" object:nil];
+    [appDelegate deleteCookies];
+    
+    [self.tabBarController setSelectedIndex:0];
+    [homeViewController.view setNeedsDisplay];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender

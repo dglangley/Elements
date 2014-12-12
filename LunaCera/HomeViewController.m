@@ -22,11 +22,13 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
+    float statusBarHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
+
     if (URL_ROOT == "http://lunacera.local")
     {
         [self.navigationController.navigationBar setBackgroundColor:[UIColor redColor]];
     }
-    self.navigationItem.title = @"LunaCera";
+    self.navigationItem.title = @"Home";
     
     /*
     UIImage *listButtonImage = [UIImage imageNamed:@"listButtonBlue.png"];
@@ -54,7 +56,9 @@
     
     [appDelegate addKeyboardBarWithOptions:NO];
     self.searchBar.inputAccessoryView = appDelegate.keyboardToolbar;
-
+    CGRect searchFrame = self.searchBar.frame;
+    [self.searchBar setFrame:CGRectMake(0, statusBarHeight, searchFrame.size.width, searchFrame.size.height)];
+    
     self.resultsTableView.tableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.resultsTableView.bounds.size.width, 20.0f)];
     
     // disables the pan gesture which slides out side menu because it
@@ -63,6 +67,41 @@
     // enable swipe gesture on nav bar
     //disabled 12/4/14
     //[self.navigationController.navigationBar addGestureRecognizer:self.revealController.revealPanGestureRecognizer];
+    
+    /***************** COVER VIEW FOR NO RESULTS ******************/
+    
+    // set frame and label for cover view, if ever used
+    float startingPosH = statusBarHeight+self.searchBar.frame.size.height;//+self.navigationController.navigationBar.frame.size.height
+
+    CGRect viewFrame = CGRectMake(0, startingPosH, self.resultsTableView.frame.size.width, self.resultsTableView.frame.size.height);
+    coverView = [[UIView alloc] initWithFrame:viewFrame];
+    [coverView setAutoresizesSubviews:NO];
+    [coverView setBackgroundColor:[UIColor colorWithRed:0.98f green:0.98f blue:0.98f alpha:1.0f]];
+    
+    defaultCoverText = @"Your Hot List is empty!\n\nBuild your Hot List by searching for products\nthen swiping left on the results\nto reveal an \"Add to Hot List\" button.";
+    coverLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, self.resultsTableView.frame.size.width, 160)];
+    [coverLabel setText:defaultCoverText];
+    [coverLabel setTextColor:[UIColor lightGrayColor]];
+    [coverLabel setFont:DEFAULT_FONT(15)];
+    [coverLabel setNumberOfLines:0];
+    [coverLabel setTextAlignment:NSTextAlignmentCenter];
+    [coverView addSubview:coverLabel];
+    
+    [self.view addSubview:coverView];
+    
+    /***************** HOT LIST LABEL FOR BOTTOM OF VIEW WHEN NON-HOT LIST RESULTS ARE SHOWING ****************/
+    float labelHeight = 50.0f;
+    hotlistButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.tabBarController.tabBar.frame.origin.y-labelHeight, self.view.frame.size.width, labelHeight)];
+    [hotlistButton setTitle:@"Return to Hot List" forState:UIControlStateNormal];
+    [hotlistButton.titleLabel setFont:DEFAULT_FONT(18)];
+    [hotlistButton.titleLabel setTextAlignment:NSTextAlignmentCenter];
+    [hotlistButton.titleLabel setTextColor:[UIColor whiteColor]];
+    [hotlistButton addTarget:self action:@selector(loadHotList) forControlEvents:UIControlEventTouchUpInside];
+    [hotlistButton setBackgroundColor:appDelegate.color3];
+    [hotlistButton setUserInteractionEnabled:YES];
+    [hotlistButton setTag:11];
+    [hotlistButton setHidden:YES];
+    [self.view addSubview:hotlistButton];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -73,6 +112,7 @@
 {
     userLongPressDetected = NO;
     isLoadingOffsetResults = NO;
+    [self.navigationController setNavigationBarHidden:YES];
 
     // commented 12/4/14
     /*
@@ -88,8 +128,12 @@
     //NSLog(@"badge %d",[UIApplication sharedApplication].applicationIconBadgeNumber);
     //[[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
     
-    if (! [appDelegate.cookies objectForKey:@"userid"])
+    if (! [appDelegate isLoggedin])
     {
+        // empty data source and table view rows
+        [self.results removeAllObjects];
+        [self.resultsTableView reloadData];
+        
         [self performSegueWithIdentifier:@"accountRegistrationSegue" sender:nil];
         return;
     }
@@ -148,8 +192,7 @@
 
     if ([self.searchBar.text isEqualToString:@""])
     {
-
-        forceLoadResults = NO;
+        forceLoadResults = YES;
         [self didLoadResultsWithPartId:@""];
     }
     else
@@ -174,6 +217,9 @@
 {
     [self.searchBar setShowsCancelButton:YES animated:YES];
     
+    [coverLabel setText:@"TIP:\n\nYou can search the market using\nPart Numbers, HECIs or keywords"];
+    [coverView setHidden:NO];
+    
     UITextField *searchBarTextField = nil;
     for (UIView *view in self.searchBar.subviews)
     {
@@ -185,7 +231,6 @@
             }
         }
     }
-    
 
     if (searchBarTextField == nil) return;
     
@@ -195,6 +240,24 @@
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
 {
     [self.searchBar setShowsCancelButton:NO];
+
+    if ([self.results count] > 0) [coverView setHidden:YES];
+    
+    if ([self.searchBar.text isEqualToString:@""])
+    {
+        [coverLabel setText:defaultCoverText];
+    }
+    else
+    {
+        [coverLabel setText:[NSString stringWithFormat:@"\"%@\" produced zero (0) results.\n\nTry another search!",self.searchBar.text]];
+    }
+}
+
+- (void)loadHotList
+{
+    self.searchBar.text = @"";
+    [coverLabel setText:defaultCoverText];
+    [self loadResults];
 }
 
 - (void)loadResults
@@ -216,7 +279,7 @@
     }
     
     NSString *searchString = [appDelegate stringByEncodingAmpersands:[[[NSString stringWithFormat:@"%@", self.searchBar.text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    NSString *urlString = [NSString stringWithFormat:@"%s/list.php?search=%@&partid=%@&pg=%d", URL_ROOT, searchString, partId, pg];
+    NSString *urlString = [NSString stringWithFormat:@"%s/list.php?json=1&search=%@&partid=%@&pg=%d", URL_ROOT, searchString, partId, pg];
     NSLog(@"home url %@",urlString);
     [appDelegate requestURL:urlString];
     
@@ -271,7 +334,12 @@
     [self simpleRefreshSection];
     
     //close keyboard and resign focus from search bar
-    if (! [self.searchBar.text isEqualToString:@""]) [self.searchBar resignFirstResponder];
+    [hotlistButton setHidden:YES];
+    if (! [self.searchBar.text isEqualToString:@""])
+    {
+        [self.searchBar resignFirstResponder];
+        [hotlistButton setHidden:NO];
+    }
 }
 
 - (void)userDidLongPress:(UILongPressGestureRecognizer *)gestureRecognizer
@@ -352,6 +420,14 @@
 
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
+    if ([self.results count] > 0)
+    {
+        [coverView setHidden:YES];
+    }
+    else
+    {
+        [coverView setHidden:NO];
+    }
     //NSLog(@"count %lu",(unsigned long)[self.results count]);
     return [self.results count];
 }
@@ -675,7 +751,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
+
     //NSLog(@"long %hhd",userLongPressDetected);
     if (userLongPressDetected == YES) return;
 
@@ -694,6 +770,8 @@
     [partDict setObject:[NSString stringWithFormat:@"%ld",(long)indexPath.section] forKey:@"indexPathRow"];
     partDetailsViewController.partDictionary = partDict;
     
+    [self.navigationController setNavigationBarHidden:NO];
+
     [self.navigationController pushViewController:partDetailsViewController animated:YES];
     //[self performSegueWithIdentifier:@"partDetailsSegue" sender:self];
 }
@@ -711,14 +789,49 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // user is deleting item
-    if (editingStyle == UITableViewCellEditingStyleDelete)
+    // user is deleting or adding hot list item
+    if (editingStyle == UITableViewCellEditingStyleDelete || editingStyle == UITableViewCellEditingStyleInsert)
     {
         NSString *pId = [[self.results objectAtIndex:indexPath.section] objectForKey:@"pid"];
-        NSString *urlString = [NSString stringWithFormat:@"%s/save_ignitors.php?partid=%@&save_to_on=0", URL_ROOT, pId];
+        NSString *urlString = [NSString stringWithFormat:@"%s/save_ignitors.php?json=1&partid=%@", URL_ROOT, pId];
         NSLog(@"ignitor url %@",urlString);
+        
         [appDelegate goURL:urlString];
+        
+        // toggle data source
+        NSMutableDictionary *rowSet = [self.results objectAtIndex:indexPath.section];
+        if ([[[self.results objectAtIndex:indexPath.section] objectForKey:@"ignitor"] intValue] == 1)
+        {
+            [rowSet setValue:@"" forKey:@"ignitor"];
+        }
+        else
+        {
+            [rowSet setValue:@"1" forKey:@"ignitor"];
+        }
+        [self.results replaceObjectAtIndex:indexPath.section withObject:rowSet];
+        [self.resultsTableView setEditing:NO animated:YES];
+        
+        // remove item from data source immediately, if hot list is turned on
+        if ([self.searchBar.text isEqualToString:@""])
+        {
+            [self.results removeObjectAtIndex:indexPath.section];
+            [self.resultsTableView reloadData];
+        }
     }
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSString *buttonTitle;
+    if ([[[self.results objectAtIndex:indexPath.section] objectForKey:@"ignitor"] intValue] == 1)
+    {
+        buttonTitle = @"Remove from Hot List";
+    }
+    else
+    {
+        buttonTitle = @"Add to Hot List";
+    }
+    return buttonTitle;
 }
 
 - (void)toggleIgnitor:(id) sender
@@ -732,7 +845,7 @@
     NSString *pId = [[self.results objectAtIndex:indexPath.section] objectForKey:@"pid"];
     NSString *save_on = @"0";
     if ([sender isOn]) save_on = @"1";
-    NSString *urlString = [NSString stringWithFormat:@"%s/save_ignitors.php?partid=%@&save_to_on=%@", URL_ROOT, pId, save_on];
+    NSString *urlString = [NSString stringWithFormat:@"%s/save_ignitors.php?json=1&partid=%@&save_to_on=%@", URL_ROOT, pId, save_on];
     NSLog(@"ignitor url %@",urlString);
     [appDelegate goURL:urlString];
 }

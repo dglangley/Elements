@@ -27,6 +27,7 @@
     
     self.navigationItem.titleView = self.remoteSegmentedControl;
     [appDelegate addKeyboardBarWithOptions:NO];
+    [self.navigationController.navigationBar setTintColor:appDelegate.color2];
     
     self.accountsTableView.dataSource = self;
     self.accountsTableView.delegate = self;
@@ -80,15 +81,18 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     UILabel *cellLabel = [[UILabel alloc] init];
     UITextField *cellTextField = [[UITextField alloc] init];
-    NSString *fieldHolder;
+    NSString *fieldHolder = @"";
+    int textfieldTag = 0;
     
     if (indexPath.row == 0)
     {
         fieldHolder = @"Login";
+        textfieldTag = 12;
     }
     else if (indexPath.row == 1)
     {
         fieldHolder = @"Password";
+        textfieldTag = 13;
     }
     
     if (cell == nil)
@@ -96,24 +100,24 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellId];
         [cellLabel setTag:11];
         [cellLabel setFrame:CGRectMake(10, 10, 80, 20)];
-        [cellLabel setFont:[UIFont systemFontOfSize:14]];
+        [cellLabel setFont:DEFAULT_FONT(15)];
         [cellLabel setTextColor:[UIColor darkGrayColor]];
-        [cellTextField setTag:12];
-        [cellTextField setFrame:CGRectMake(100, 11, 210, 20)];
-        [cellTextField setPlaceholder:[fieldHolder lowercaseString]];
-        [cellTextField setText:[[remoteSettings objectForKey:self.brokerKey] objectForKey:[fieldHolder lowercaseString]]];
-        [cellTextField setFont:[UIFont systemFontOfSize:14]];
-        cellTextField.inputAccessoryView = appDelegate.keyboardToolbar;
     }
     else
     {
         cellLabel = (UILabel *)[cell.contentView viewWithTag:11];
-        cellTextField = (UITextField *)[cell.contentView viewWithTag:12];
     }
-    cellLabel.text = fieldHolder;
+    [cellLabel setText:fieldHolder];//this is the helper label, which mirrors the placeholder text
+
+    [cellTextField setFrame:CGRectMake(100, 11, 210, 20)];
+    [cellTextField setPlaceholder:[fieldHolder lowercaseString]];
+    [cellTextField setFont:DEFAULT_FONT(15)];
+    [cellTextField setInputAccessoryView:appDelegate.keyboardToolbar];
+    [cellTextField setText:[[remoteSettings objectForKey:self.brokerKey] objectForKey:[fieldHolder lowercaseString]]];
+    [cellTextField setTag:textfieldTag];
+    [cellTextField setSecureTextEntry:NO];
     
-    cellTextField.secureTextEntry = NO;
-    if ([fieldHolder isEqualToString:@"Password"]) cellTextField.secureTextEntry = YES;
+    if ([fieldHolder isEqualToString:@"Password"]) [cellTextField setSecureTextEntry:YES];
 
     [cell addSubview:cellLabel];
     [cell addSubview:cellTextField];
@@ -157,12 +161,27 @@
 
 - (void)saveRemote
 {
-    NSMutableArray *creds = [[NSMutableArray alloc] initWithObjects:@"",@"", nil];//login and password objects
+    //NSMutableArray *creds = [[NSMutableArray alloc] initWithObjects:@"",@"", nil];//login and password objects
     
     NSString *remoteSetting = @"N";
-    if (self.remoteSegmentedControl.selectedSegmentIndex == 1) remoteSetting = @"Y";
+    UITextField *loginField = (UITextField *)[self.view viewWithTag:12];
+    UITextField *passwordField = (UITextField *)[self.view viewWithTag:13];
+    NSString *remoteLogin = [appDelegate stringByEncodingAmpersands:[[[NSString stringWithFormat:@"%@", loginField.text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    NSString *remotePassword = [appDelegate stringByEncodingAmpersands:[[NSString stringWithFormat:@"%@", passwordField.text]  stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    if (self.remoteSegmentedControl.selectedSegmentIndex == 1)
+    {
+        // must have login and password if the user is switching to on
+        if ([remoteLogin isEqualToString:@""] || [remotePassword isEqualToString:@""])
+        {
+            self.remoteSegmentedControl.selectedSegmentIndex = 0;
+            UIAlertView *alertSuccessful = [[UIAlertView alloc] initWithTitle:@"Did you forget?" message:@"Please enter your login and password to activate this module" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [alertSuccessful show];
+            return;
+        }
+        remoteSetting = @"Y";
+    }
     
-    NSString *urlString = [NSString stringWithFormat:@"%s/remotes.php?remote=%@&remote_setting=%@&remote_login=%@&remote_password=%@", URL_ROOT, self.brokerKey, remoteSetting, [creds objectAtIndex:0], [creds objectAtIndex:1]];
+    NSString *urlString = [NSString stringWithFormat:@"%s/remotes.php?remote=%@&remote_setting=%@&remote_login=%@&remote_password=%@", URL_ROOT, self.brokerKey, remoteSetting, remoteLogin, remotePassword];
     NSLog(@"save remote url %@",urlString);
     [appDelegate goURL:urlString];
     //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshView:) name:@"connectionObserver" object:nil];

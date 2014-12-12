@@ -11,14 +11,14 @@
 
 #define appDelegate ((AppDelegate*)[[UIApplication sharedApplication] delegate])
 
-#define URL_ROOT "http://lunacera.local"//www.lunacera.com"//
+#define URL_ROOT "http://lunacera.local"//https://www.lunacera.com"//
 
 #define DEFAULT_FONT(s)       [UIFont fontWithName:@"TamilSangamMN" size:(s-1)]
 
 @class LeftViewController;
 @class HomeViewController;
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, NSURLConnectionDelegate, PKRevealing>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UITextFieldDelegate, NSURLConnectionDelegate, PKRevealing>
 {
     NSMutableData* _receivedData;
 }
@@ -38,7 +38,7 @@
 @property (strong, nonatomic) NSUserDefaults *LOCAL_DB;
 @property (strong, nonatomic) NSMutableDictionary *cookies;
 @property (strong, nonatomic) NSArray *remoteKeys, *cookiesArray;
-@property (strong, nonatomic) UIColor *color1, *color2;
+@property (strong, nonatomic) UIColor *color1, *color2, *color3;
 
 //for singleton class
 //@property (strong, nonatomic) SingletonData *singleton;
@@ -55,5 +55,7 @@
 - (void)updateTabBarBadge;
 - (NSString *)getCompany:(NSString *)cid;
 - (void)styleViews;
+- (void)deleteCookies;
+- (BOOL)isLoggedin;
 
 @end

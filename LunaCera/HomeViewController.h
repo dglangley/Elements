@@ -18,7 +18,10 @@
     int pg;
     CGPoint lastScrollOffset;
     BOOL isLoadingOffsetResults;
-    NSString *today;
+    NSString *today, *defaultCoverText;
+    UIView *coverView;
+    UIButton *hotlistButton;
+    UILabel *coverLabel;
 }
 
 @property (strong, nonatomic) NSMutableArray *results;

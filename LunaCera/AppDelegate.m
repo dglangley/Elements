@@ -22,6 +22,7 @@
     
     self.color1 = [UIColor colorWithRed:78.0/255.0 green:184.0/255.0 blue:0.0 alpha:1.0];
     self.color2 = [UIColor colorWithRed:1.0/255.0 green:72.0/255.0 blue:135.0/255.0 alpha:1.0f];
+    self.color3 = [UIColor colorWithRed:168.0/255.0 green:30.0/255.0 blue:0.0/255.0 alpha:1.0f];
     
     //self.tabBarViewController = (UITabBarController *)self.window.rootViewController;
     self.tabBarViewController = [storyboard instantiateViewControllerWithIdentifier:@"tabBarViewController"];
@@ -30,20 +31,14 @@
 
     self.navViewController = (UINavigationController *)self.tabBarViewController.navigationController;
     [self.navViewController.navigationBar setContentMode:UIViewContentModeScaleAspectFit];
+
 	self.leftViewController = [storyboard instantiateViewControllerWithIdentifier:@"leftViewController"];
     self.leftViewController.view.backgroundColor = [UIColor grayColor];
     
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
     {
     }
-    
-    self.cookies = [[NSMutableDictionary alloc] init];
-    self.cookiesArray = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
-    for (NSHTTPCookie *cookie in self.cookiesArray)
-    {
-        [self.cookies setValue:[cookie value] forKey:[cookie name]];
 
-    }
     
     self.LOCAL_DB = [NSUserDefaults standardUserDefaults];  //load NSUserDefaults
     if (! [self.LOCAL_DB objectForKey:@"companies"])
@@ -78,9 +73,9 @@
     
     // disables the pan gesture which slides out side menu because it
     // interferes with swipe gesture for editing cells
-    [self.revealController setRecognizesPanningOnFrontView:YES];
+    [self.revealController setRecognizesPanningOnFrontView:NO];//disabling for now, 12/12/14
     // enable swipe gesture on nav bar
-    [self.navViewController.navigationBar addGestureRecognizer:self.revealController.revealPanGestureRecognizer];
+    //[self.navViewController.navigationBar addGestureRecognizer:self.revealController.revealPanGestureRecognizer];
     
     self.remoteDescrs = [[NSDictionary alloc] initWithObjectsAndKeys:@"PowerSource",@"ps",@"BrokerBin",@"bb",@"Tel-Explorer",@"te", nil];
     self.remoteKeys = [[NSArray alloc] initWithObjects:@"ps",@"bb",@"te", nil];
@@ -215,8 +210,40 @@
     [[UITextField appearance] setLeftViewMode:UITextFieldViewModeAlways];
     // somehow I need this set, but I can't use it in setRightViewMode or the view won't appear
     [[UITextField appearance] setRightView:paddingView];
+    
+    //[[UITextField appearance] setDelegate:self];
+    
+    [self addKeyboardBarWithOptions:NO];
+    [[UITextField appearance] setInputAccessoryView:self.keyboardToolbar];
 
     [[UISegmentedControl appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:DEFAULT_FONT(18), NSFontAttributeName, nil] forState:UIControlStateNormal];
+}
+
+- (BOOL)isLoggedin
+{
+    self.cookies = [[NSMutableDictionary alloc] init];
+    self.cookiesArray = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
+    for (NSHTTPCookie *cookie in self.cookiesArray)
+    {
+        [self.cookies setValue:[cookie value] forKey:[cookie name]];
+        
+    }
+    if (! [self.cookies objectForKey:@"userid"] || ! [self.cookies objectForKey:@"user_token"])
+    {
+        [self deleteCookies];
+        return NO;
+    }
+    return YES;
+}
+
+- (void)deleteCookies
+{
+    // erase all cookies on signout
+    NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    for (NSHTTPCookie *cookie in [storage cookies]) {
+        [storage deleteCookie:cookie];
+    }
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 
@@ -259,6 +286,24 @@
     [appDelegate resignFirstResponder];
     [self.tabBarViewController resignFirstResponder];
     [self.tabBarViewController.view endEditing:YES];
+    // this last method attempts to search for the view controller and resign
+    // any responders in text fields that are NOT necessarily in the tab view controller
+    [self findFirstResponder];
+    
+}
+
+- (id)findFirstResponder
+{
+    if (self.isFirstResponder) {
+        return self;
+    }
+    for (UIView *subView in [[[UIApplication sharedApplication] keyWindow] subviews]) {
+        [subView endEditing:YES];
+        /*if ([subView isFirstResponder]) {
+            return subView;
+        }*/
+    }
+    return nil;
 }
 
 - (void)prevField:(id)sender
@@ -497,7 +542,7 @@
 // Display server response to the user
 - (void)showAlertResponse:(NSString *)response
 {
-    UIAlertView *alertName = [[UIAlertView alloc] initWithTitle:@"Error!" message:response delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    UIAlertView *alertName = [[UIAlertView alloc] initWithTitle:@"Not cool..." message:response delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
     
     // Set alert tag to make alertview unique
     alertName.tag = 800;

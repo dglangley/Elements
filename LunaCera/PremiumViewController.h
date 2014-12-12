@@ -8,7 +8,7 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 
-@interface PremiumViewController : UIViewController
+@interface PremiumViewController : UIViewController <UITextFieldDelegate>
 {
     UIView *registerView, *loginView;
     UITextField *registerFirstName, *registerLastName, *registerCompanyName, *registerEmail1, *registerEmail2, *registerPassword1, *registerPassword2, *loginEmail, *loginPassword;
@@ -19,6 +19,7 @@
 - (IBAction)didChangeSegmentedControl:(id)sender;
 
 
+@property (strong, nonatomic) IBOutlet UIScrollView *viewScrollView;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *loginRegisterSegmentedControl;
 
 @end
