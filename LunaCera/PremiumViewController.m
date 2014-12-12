@@ -207,8 +207,7 @@
 
 - (void)willSubmitForm
 {
-    NSString *urlString = [[NSString alloc] init];
-    NSString *email1, *email2, *password1, *password2, *name1, *name2, *company;
+    NSString *urlString, *email1, *email2, *password1, *password2, *name1, *name2, *company;
     if (self.loginRegisterSegmentedControl.selectedSegmentIndex == 0)
     {//submit login form
         email1 = [appDelegate stringByEncodingAmpersands:[[[NSString stringWithFormat:@"%@", loginEmail.text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];

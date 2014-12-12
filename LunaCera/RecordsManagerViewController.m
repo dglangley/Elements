@@ -73,6 +73,8 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    
     NSString *queryString = [NSString stringWithFormat:@"%s/companies.php",URL_ROOT];
     NSLog(@"companies url %@",queryString);
     [appDelegate goURL:queryString];
@@ -89,7 +91,7 @@
     companyData = [appDelegate.jsonResults objectForKey:@"results"];
     //NSLog(@"company %d",[companyData count]);
     
-    NSMutableDictionary *eachCompany = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *eachCompany;// = [[NSMutableDictionary alloc] init];
     UITextField *companyTextField = (UITextField *)[self.view viewWithTag:1];
     
     [self.companyArray addObject:@"- New Company -"];

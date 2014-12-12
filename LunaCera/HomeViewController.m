@@ -106,10 +106,13 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:animated];
+
     userLongPressDetected = NO;
     isLoadingOffsetResults = NO;
     [self.navigationController setNavigationBarHidden:YES];
@@ -469,7 +472,9 @@
     /*
     UILabel *companyLabel = [[UILabel alloc] initWithFrame:CGRectMake(90,65,160,20)];
      */
+    /*
     UILabel *priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(5,90,80,14)];
+     */
     //disabled, 12/4/14
     /*
     UILabel *marketFooter = [[UILabel alloc] initWithFrame:CGRectMake(0, 116, self.view.bounds.size.width, 36)];
@@ -489,11 +494,6 @@
     {
         [self synchronizeResultsWithRowData:rowData];
     }
-    
-    BOOL igniteOn = NO;
-    if ([[rowData objectForKey:@"ignitor"] isEqualToString:@"1"]) igniteOn = YES;
-    //NSLog(@"row %@",rowData);
-    //NSLog(@"ignitor %@ %hhd",[rowData objectForKey:@"ignitor"], igniteOn);
 
     if (cell == nil)
     {
@@ -534,6 +534,11 @@
         dateLabel.textAlignment = NSTextAlignmentRight;
         [cell.contentView addSubview:dateLabel];
         
+        cellImage.tag = 29;
+        [cell.contentView addSubview:cellImage];
+
+        // footer row disabled, 12/4/14
+        /*
         priceLabel.tag = 28;
         priceLabel.font = [UIFont systemFontOfSize:14];
         priceLabel.textColor = [UIColor blackColor];
@@ -541,12 +546,7 @@
         priceLabel.contentMode = UIViewContentModeScaleAspectFit;
         priceLabel.textAlignment = NSTextAlignmentCenter;
         [cell.contentView addSubview:priceLabel];
-        
-        cellImage.tag = 29;
-        [cell.contentView addSubview:cellImage];
-
-        // footer row disabled, 12/4/14
-        /*
+         
         marketFooter.tag = 30;
         [marketFooter setBackgroundColor:[UIColor colorWithRed:240.0/255.0 green:240.0/255.0 blue:240.0/255.0 alpha:0.3]];
         // build mask to cover border except for top edge
@@ -599,10 +599,10 @@
         topLabel = (UILabel *)[cell.contentView viewWithTag:22];
         bottomLabel = (UILabel *)[cell.contentView viewWithTag:23];
         dateLabel = (UILabel *)[cell.contentView viewWithTag:24];
-        priceLabel = (UILabel *)[cell.contentView viewWithTag:28];
         cellImage = (UIImageView *)[cell.contentView viewWithTag:29];
         //disabled, 12/4/14
         /*
+        priceLabel = (UILabel *)[cell.contentView viewWithTag:28];
         marketFooter = (UILabel *)[cell.contentView viewWithTag:30];
         demandButton = (UIButton *)[cell.contentView viewWithTag:31];
         salesButton = (UIButton *)[cell.contentView viewWithTag:32];
@@ -670,6 +670,9 @@
      */
     dateLabel.text = [rowData objectForKey:@"datetime"];
     
+    
+    // bottom row buttons and price options disabled, 12/4/14
+    /*
     NSString *qty = @"";
     if ([rowData objectForKey:@"qty"] != nil
         && ! [[rowData objectForKey:@"qty"] isKindOfClass:[NSNull class]]
@@ -677,9 +680,7 @@
     {
         qty = [NSString stringWithFormat: @"%@",[rowData objectForKey:@"qty"]];
     }
-    
-    // bottom row buttons and price options disabled, 12/4/14
-    /*
+
     NSArray *market = [rowData objectForKey:@"market"];
     NSString *availStr = @"Availability";
     NSArray *avail = [market objectAtIndex:2];

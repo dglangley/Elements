@@ -13,7 +13,7 @@
 
 - (id)initWithFrame:(CGRect)frame
 {
-//    self = [super initWithFrame:frame];
+      self = [super initWithFrame:frame];
     
 //    if (self) {
         if ([self viewWithTag:151] && [self viewWithTag:151].hidden == NO)

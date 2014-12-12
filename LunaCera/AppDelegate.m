@@ -87,8 +87,7 @@
 
 - (UIViewController *)leftSideViewController
 {
-    UIViewController *leftSideViewController = [[UIViewController alloc] init];
-    leftSideViewController = self.leftViewController;
+    UIViewController *leftSideViewController = self.leftViewController;
     leftSideViewController.view.backgroundColor = [UIColor grayColor];
     
     return leftSideViewController;
@@ -524,10 +523,9 @@
     
     //NSLog(@"ready %@",readyData);
     // Parse that data object using NSJSONSerialization without options.
-    NSDictionary *jsonDict = [[NSDictionary alloc] init];
     
     // options was: kNilOptions
-    jsonDict = [NSJSONSerialization JSONObjectWithData:readyData options:NSJSONReadingMutableContainers error:&error];
+    NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:readyData options:NSJSONReadingMutableContainers error:&error];
     [self goJson:jsonDict];
 }
 

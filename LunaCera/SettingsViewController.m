@@ -49,6 +49,8 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    
     NSString *urlString = [NSString stringWithFormat:@"%s/remotes.php?json=1", URL_ROOT];
     [appDelegate goURL:urlString];
     
